@@ -1,0 +1,131 @@
+/* pages/index/index.wxss */
+page {
+    background-color: #E8DBCD;
+  }
+  
+  .page-container {
+    width: 100vw;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #E8DBCD 0%, #D9C7B1 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* 顶部头像 */
+  .avatar-wrapper {
+    position: absolute;
+    top: 6%;
+    left: 6%;
+    width: 110rpx;
+    height: 110rpx;
+    border-radius: 50%;
+    background-color: #F0E6D6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  }
+  .avatar {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+  }
+  
+  /* 中间签到卡片 */
+  .checkin-card {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280rpx;
+    height: 280rpx;
+    background-color: #F0E6D6;
+    border-radius: 24rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+  }
+  .checkin-icon {
+    font-size: 48rpx;
+    margin-bottom: 16rpx;
+  }
+  .checkin-text {
+    font-size: 32rpx;
+    color: #333;
+    margin-bottom: 8rpx;
+  }
+  .checkin-date {
+    font-size: 28rpx;
+    color: #666;
+  }
+  /* 已签到状态下的卡片样式反馈 */
+  .checkin-card.checked {
+    background-color: #ffffff; /* 淡淡的护眼绿色背景，表示完成 */
+    opacity: 0.9;
+    box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05); /* 稍微降低阴影，产生按下的感觉 */
+  }
+
+  .checkin-card.checked .checkin-text {
+    color: #FF6B00; 
+    font-weight: bold;
+  }
+  
+  /* 底部 Learn/Review 按钮区 */
+  .action-buttons {
+    position: absolute;
+    bottom: 220rpx;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 30rpx;
+  }
+  .action-btn {
+    width: 300rpx;
+    height: 160rpx;
+    background-color: #F0E6D6;
+    border-radius: 16rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+  }
+  .action-title {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 8rpx;
+  }
+  .action-number {
+    font-size: 32rpx;
+    color: #FF8C38;
+    font-weight: 500;
+  }
+  
+  /* 底部 TabBar */
+  .bottom-tabbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 160rpx;
+    background-color: #E8DBCD;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1rpx solid #D9C7B1;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tab-icon {
+    font-size: 36rpx;
+    color: #333;
+  }

@@ -1,0 +1,160 @@
+<view class="page-container">
+  <view class="top-bg-glow"></view>
+
+  <view class="custom-back-btn" bindtap="goBack">
+    <text class="back-arrow">〈</text>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">碎片化刷题</text>
+    </view>
+    
+    <view class="tabs">
+      <text class="tab-item {{activeTab === 'reading' ? 'active' : ''}}" bindtap="switchTab" data-tab="reading">阅读</text>
+      <text class="tab-item {{activeTab === 'writing' ? 'active' : ''}}" bindtap="switchTab" data-tab="writing">写译</text>
+      <text class="tab-item {{activeTab === 'vocabulary' ? 'active' : ''}}" bindtap="switchTab" data-tab="vocabulary">单词</text>
+      <text class="tab-item {{activeTab === 'listening' ? 'active' : ''}}" bindtap="switchTab" data-tab="listening">听力</text>
+    </view>
+
+    <scroll-view wx:if="{{activeTab === 'listening'}}" scroll-x class="fragment-cards" show-scrollbar="false">
+      <view class="f-card" bindtap="goToPractice" data-module="listening" data-subtype="short_news">
+        <view class="icon-box red">📰</view>
+        <text class="f-title">短篇新闻</text>
+        <text class="f-progress">{{shortNewsProgress}} / {{shortNewsTotal}}</text>
+      </view>
+      <view class="f-card" bindtap="goToPractice" data-module="listening" data-subtype="long_dialog">
+        <view class="icon-box orange">💬</view>
+        <text class="f-title">长对话</text>
+        <text class="f-progress">{{longDialogProgress}} / {{longDialogTotal}}</text>
+      </view>
+      <view class="f-card" bindtap="goToPractice" data-module="listening" data-subtype="passage">
+        <view class="icon-box yellow">📖</view>
+        <text class="f-title">短文理解</text>
+        <text class="f-progress">{{passageProgress}} / {{passageTotal}}</text>
+      </view>
+    </scroll-view>
+
+    <scroll-view wx:if="{{activeTab === 'reading'}}" scroll-x class="fragment-cards" show-scrollbar="false">
+      <view class="f-card" bindtap="goToPractice" data-module="reading" data-subtype="banked_cloze">
+        <view class="icon-box blue">✏️</view>
+        <text class="f-title">选词填空</text>
+        <text class="f-progress">{{fillBlankProgress}} / {{fillBlankTotal}}</text>
+      </view>
+      <view class="f-card" bindtap="goToPractice" data-module="reading" data-subtype="information_matching">
+        <view class="icon-box green">🔗</view>
+        <text class="f-title">信息匹配</text>
+        <text class="f-progress">{{matchingProgress}} / {{matchingTotal}}</text>
+      </view>
+      <view class="f-card" bindtap="goToPractice" data-module="reading" data-subtype="careful_reading">
+        <view class="icon-box purple">🔍</view>
+        <text class="f-title">仔细阅读</text>
+        <text class="f-progress">{{carefulReadingProgress}} / {{carefulReadingTotal}}</text>
+      </view>
+    </scroll-view>
+
+    <scroll-view wx:if="{{activeTab === 'writing'}}" scroll-x class="fragment-cards" show-scrollbar="false">
+      <view class="f-card" bindtap="goToPractice" data-module="writing" data-subtype="writing">
+        <view class="icon-box red">✍️</view>
+        <text class="f-title">写作</text>
+        <text class="f-progress">{{write}} / {{writeTotal}}</text>
+      </view>
+      <view class="f-card" bindtap="goToPractice" data-module="writing" data-subtype="translation">
+        <view class="icon-box orange">🌐</view>
+        <text class="f-title">翻译</text>
+        <text class="f-progress">{{translate}} / {{translateTotal}}</text>
+      </view>
+    </scroll-view>
+
+    <scroll-view wx:if="{{activeTab === 'vocabulary'}}" scroll-x class="fragment-cards" show-scrollbar="false">
+      <view class="f-card" bindtap="goToPractice" data-module="vocabulary" data-subtype="reading_words">
+        <view class="icon-box yellow">📚</view>
+        <text class="f-title">阅读单词</text>
+        <text class="f-progress">{{readingWordsProgress}} / {{readingWordsTotal}}</text>
+      </view>
+      <view class="f-card" bindtap="goToPractice" data-module="vocabulary" data-subtype="listening_words">
+        <view class="icon-box blue">🎧</view>
+        <text class="f-title">听力单词</text>
+        <text class="f-progress">{{listeningWordsProgress}} / {{listeningWordsTotal}}</text>
+      </view>
+    </scroll-view>
+
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">按模块刷题</text>
+    </view>
+    <view class="module-grid">
+        <view class="m-card gold" bindtap="onReadingTap">
+        <view class="m-content">
+          <text class="m-title">阅读真题</text>
+          <text class="m-count">进度 {{readingProgress}}/{{readingTotal}}</text>
+        </view>
+        <view class="m-bottom-bar">
+          <text>去刷题 〉</text>
+        </view>
+        <view class="m-watermark book-mark"></view>
+      </view>
+      <view class="m-card orange" bindtap="onWritingTap">
+        <view class="m-content">
+          <text class="m-title">写作真题</text>
+          <text class="m-count">进度 {{writingProgress}}/{{writingTotal}}</text>
+        </view>
+        <view class="m-bottom-bar">
+          <text>去刷题 〉</text>
+        </view>
+        <view class="m-watermark pen-mark"></view>
+      </view>
+      <view class="m-card blue" bindtap="onListeningTap">
+        <view class="m-content">
+          <text class="m-title">听力真题</text>
+          <text class="m-count">进度 {{listeningProgress}}/{{listeningTotal}}</text>
+        </view>
+        <view class="m-bottom-bar">
+          <text>去刷题 〉</text>
+        </view>
+        <view class="m-watermark radio-mark"></view> 
+      </view>
+      <view class="m-card purple" bindtap="onTranslationTap">
+        <view class="m-content">
+          <text class="m-title">翻译真题</text>
+          <text class="m-count">进度 {{translationProgress}}/{{translationTotal}}</text>
+        </view>
+        <view class="m-bottom-bar">
+          <text>去刷题 〉</text>
+        </view>
+        <view class="m-watermark chat-mark"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section" style="margin-bottom: 20rpx;">
+    <view class="section-header">
+      <text class="section-title">按年份刷题</text>
+      <view class="more-btn" bindtap="onMoreTap">更多</view>
+    </view>
+    <scroll-view scroll-x class="year-list" show-scrollbar="false">
+      <view class="year-item {{activeYear === '2025' ? 'active' : ''}}" bindtap="switchYear" data-year="2025">2025</view>
+      <view class="year-item {{activeYear === '2024' ? 'active' : ''}}" bindtap="switchYear" data-year="2024">2024</view>
+      <view class="year-item {{activeYear === '2023' ? 'active' : ''}}" bindtap="switchYear" data-year="2023">2023</view>
+      <view class="year-item {{activeYear === '2022' ? 'active' : ''}}" bindtap="switchYear" data-year="2022">2022</view>
+      <view class="year-item {{activeYear === '2021' ? 'active' : ''}}" bindtap="switchYear" data-year="2021">2021</view>
+    </scroll-view>
+  </view>
+
+  <swiper class="paper-swiper" indicator-dots="true" indicator-active-color="#ccc" indicator-color="#eaeaea">
+    <swiper-item>
+      <view class="paper-grid">
+        <view class="p-card" wx:for="{{papers}}" wx:key="id">
+          <view class="p-info">
+            <text class="p-title">{{item.title}}</text>
+          </view>
+          <view class="p-download">
+             <text class="dl-icon">↓</text>
+          </view>
+        </view>
+      </view>
+    </swiper-item>
+  </swiper>
+</view>

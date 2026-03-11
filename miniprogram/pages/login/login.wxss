@@ -1,0 +1,100 @@
+/* pages/login/login.wxss */
+/* 页面容器 */
+.container {
+    width: 100%;
+    height: 100vh;
+    background-color: #fff;
+    padding: 20rpx;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* 标题区域 */
+  .title-area {
+    margin-top: 200rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* 不背logo */
+  .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30rpx;
+  }
+  .logo-top {
+    font-size: 80rpx;
+    color: #ff6666;
+    border: 2rpx solid #ff6666;
+    border-radius: 50%;
+    width: 100rpx;
+    height: 100rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10rpx;
+  }
+  .logo-bottom {
+    font-size: 80rpx;
+    color: #f79a3e;
+    background-color: #f79a3e;
+    color: #fff;
+    border-radius: 50%;
+    width: 100rpx;
+    height: 100rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /*  slogan */
+  .slogan {
+    font-size: 36rpx;
+    color: #333;
+    margin-top: 20rpx;
+  }
+  
+  /* 按钮区域 */
+  .btn-area {
+    width: 100%;
+    margin-top: 200rpx;
+  }
+  
+  /* 按钮通用样式 */
+  .btn {
+    width: 100%;
+    height: 100rpx;
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38rpx;
+    background-color: #f6f6f6;
+    color: #383838;
+  }
+  .btn-icon {
+    width: 50rpx;
+    height: 50rpx;
+    margin-right: 15rpx;
+  }
+  
+  /* 协议区域 */
+  .agreement-area {
+    position: absolute;
+    bottom: 100rpx;
+    display: flex;
+    align-items: center;
+    font-size: 30rpx;
+    color: #999;
+  }
+  .agreement-checkbox {
+    transform: scale(0.8);
+    margin-right: 10rpx;
+  }
+  .agreement-text {
+    line-height: 40rpx;
+  }

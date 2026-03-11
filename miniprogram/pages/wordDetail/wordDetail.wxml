@@ -1,0 +1,135 @@
+<view class="container">
+  <view class="custom-nav" style="height: {{navBarHeight}}px;">
+    <view class="nav-content" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+      <view class="nav-left" bindtap="goBack">
+        <text class="nav-icon">〈</text>
+        <text class="nav-text"> {{completedInBatch}}/{{batchSize}}</text>
+      </view>
+      <view class="nav-right">
+        <text class="nav-icon">↺</text>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="main-content" style="padding-top: {{navBarHeight + 20}}px; padding-bottom: 180rpx;">
+    
+    <view class="word-header">
+
+      <view class="spell-row">
+        <text class="spell">{{word.headWord}}</text>
+        
+        <view class="study-status">
+          <view class="dots-group">
+            <view class="dot {{currentStep >= 3 ? 'dot-green' : ''}}"></view>
+            <view class="dot {{currentStep >= 2 ? 'dot-green' : ''}}"></view>
+            <view class="dot {{currentStep >= 1 ? 'dot-green' : ''}}"></view>
+          </view>
+          <text class="thumb-icon" wx:if="{{showThumb}}">👍</text>
+        </view>
+      </view>
+      <view class="phonetic-row">
+        <view class="accent-tag" bindtap="toggleAccent">
+          <text>{{ accentType === 2 ? '美' : '英' }}</text>
+          <text style="margin-left: 6rpx; font-size: 24rpx;">📣</text>
+        </view>
+        <text class="phonetic" bindtap="playAudio">[{{ accentType === 2 ? word.content.word.content.usphone : word.content.word.content.ukphone }}]</text>
+      </view>
+    </view>
+
+    <view class="section-card core-trans">
+      <block wx:for="{{word.content.word.content.trans}}" wx:key="index">
+        <view class="trans-item">
+          <text class="pos">{{item.pos}}.</text>
+          <text class="tran-cn">{{item.tranCn}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="section-card memory-box" wx:if="{{word.content.word.content.remMethod}}">
+      <view class="section-title"><text>💡 巧记法</text></view>
+      <view class="divider"></view>
+      <text class="desc">{{word.content.word.content.remMethod.val}}</text>
+    </view>
+
+    <view class="section-card phrase-box" wx:if="{{word.content.word.content.phrase.phrases.length > 0}}">
+      <view class="section-title"><text>🔗 常用搭配</text></view>
+      <view class="divider"></view>
+      <block wx:for="{{word.content.word.content.phrase.phrases}}" wx:key="index">
+        <view class="phrase-item" wx:if="{{index < 3}}">
+          <text class="p-en">{{item.pContent}}</text>
+          <text class="p-cn">{{item.pCn}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="section-card exam-box" wx:if="{{word.content.word.content.realExamSentence.sentences.length > 0}}">
+      <view class="section-title"><text>🏆 历年真题考点</text></view>
+      <view class="divider"></view>
+      <block wx:for="{{word.content.word.content.realExamSentence.sentences}}" wx:key="index">
+        <view class="sentence-item">
+          <text class="s-en">{{item.sContent}}</text>
+          <view class="s-source">—— {{item.sourceInfo.year}} {{item.sourceInfo.level}} {{item.sourceInfo.type}}</view>
+        </view>
+      </block>
+    </view>
+    
+    <view class="section-card" wx:elif="{{word.content.word.content.sentence.sentences.length > 0}}">
+      <view class="section-title"><text>📝 双语例句</text></view>
+      <view class="divider"></view>
+      <block wx:for="{{word.content.word.content.sentence.sentences}}" wx:key="index">
+        <view class="sentence-item">
+          <text class="s-en">{{item.sContent}}</text>
+          <text class="s-cn">{{item.sCn}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="expand-toggle" 
+          bindtap="toggleExpand" 
+          wx:if="{{word.content.word.content.syno.synos.length > 0 || word.content.word.content.relWord.rels.length > 0}}">
+      <text>{{isExpandOpen ? '收起拓展词汇 ▲' : '展开同根词 / 近义词 ▼'}}</text>
+    </view>
+
+    <view class="expand-panel" wx:if="{{isExpandOpen}}">
+      <view class="section-card" wx:if="{{word.content.word.content.syno.synos.length > 0}}">
+        <view class="section-title"><text>🔄 同近义词</text></view>
+        <view class="divider"></view>
+        <block wx:for="{{word.content.word.content.syno.synos}}" wx:key="index">
+          <view class="syno-item">
+            <text class="s-tran">[{{item.pos}}.] {{item.tran}}</text>
+            <view class="s-hwds">
+              <block wx:for="{{item.hwds}}" wx:key="wIndex" wx:for-item="wItem">
+                <text class="s-word">{{wItem.w}}</text>
+              </block>
+            </view>
+          </view>
+        </block>
+      </view>
+
+      <view class="section-card" wx:if="{{word.content.word.content.relWord.rels.length > 0}}">
+        <view class="section-title"><text>🌳 同根词</text></view>
+        <view class="divider"></view>
+        <block wx:for="{{word.content.word.content.relWord.rels}}" wx:key="index">
+          <view class="rel-group">
+            <text class="r-pos">{{item.pos}}.</text>
+            <view class="r-words">
+              <block wx:for="{{item.words}}" wx:key="wIndex" wx:for-item="wItem">
+                <view class="r-word-item">
+                  <text class="r-hwd">{{wItem.hwd}}</text>
+                  <text class="r-tran">{{wItem.tran}}</text>
+                </view>
+              </block>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+  </scroll-view>
+
+  <view class="footer-action" bindtap="goNext">
+    <text class="action-text">下一词</text>
+    <view class="action-line line-green"></view>
+  </view>
+
+</view>

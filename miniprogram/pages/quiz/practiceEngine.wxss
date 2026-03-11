@@ -1,0 +1,260 @@
+/* pages/quiz/practiceEngine.wxss */
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f7f8fa;
+  }
+  
+    /* 导航栏样式 */
+    .custom-nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 999;
+      }
+      .nav-content {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 30rpx;
+        box-sizing: border-box;
+      }
+      .nav-left, .nav-right {
+        display: flex;
+        align-items: center;
+        color: #555;
+      }
+      .nav-right {
+        transform: translateY(60rpx); 
+        /* margin-top: 60rpx; */
+      }
+      .nav-icon {
+        font-size: 40rpx;
+        margin: 0 15rpx;
+      }
+      .nav-text {
+        margin-left: 20rpx;
+        font-size: 30rpx;
+      }
+      
+  /* .header {
+    text-align: right;
+    padding: 20rpx 30rpx;
+    color: #999;
+    font-size: 28rpx;
+    background: #fff;
+    z-index: 10;
+  } */
+  
+  .main-swiper {
+    flex: 1;
+    height: 100%;
+  }
+  
+  .empty-state {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28rpx;
+    color: #999;
+  }
+  
+  /* ================= 题型 1：分屏样式 ================= */
+  .split-layout {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .material-area {
+    background-color: #f7f8fa;
+    padding: 30rpx;
+    box-sizing: border-box;
+  }
+  
+  .material-content {
+    font-size: 34rpx;
+    line-height: 1.8;
+    color: #333;
+    padding-bottom: 40rpx;
+  }
+  
+  /* 底部抽屉区域 */
+  .question-drawer {
+    background-color: #fff;
+    border-radius: 40rpx 40rpx 0 0;
+    box-shadow: 0 -4rpx 20rpx rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: height 0.05s linear;
+  }
+  
+  .drag-handle-wrap {
+    height: 60rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .drag-bar {
+    width: 60rpx;
+    height: 8rpx;
+    background-color: #dcdcdc;
+    border-radius: 4rpx;
+  }
+  
+  .question-scroll {
+    flex: 1;
+    padding: 0 30rpx 40rpx 30rpx;
+    box-sizing: border-box;
+  }
+  
+  /* ================= 题型 2：标准全屏样式 ================= */
+  .standard-layout {
+    height: 100%;
+    padding: 40rpx 30rpx;
+    margin-top: 180rpx;
+    box-sizing: border-box;
+    background-color: #f7f8fa;
+  }
+  
+  /* ================= 通用题目样式 ================= */
+  .q-title {
+    font-size: 40rpx;
+    font-weight: bolder;
+    color: #333;
+    margin-bottom: 60rpx;
+    margin-left: 30rpx;
+  }
+  
+  .q-content {
+    font-size: 40rpx;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 30rpx;
+    margin-left: 30rpx;
+  }
+  
+  .q-source {
+    font-size: 32rpx;
+    color: #b2b2b2;
+    margin-bottom: 40rpx;
+    margin-left: 30rpx;
+  }
+  
+  /* 选项样式 */
+  .options-box {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+  }
+  
+  .option-item {
+    display: flex;
+    align-items: center;
+    background: #f7f8fa;
+    padding: 30rpx;
+    border-radius: 20rpx;
+    border: 2rpx solid transparent;
+  }
+  
+  .option-item.selected {
+    background: #f0f7ff;
+    border: 2rpx solid #3c8cff;
+  }
+  
+  .option-label {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    background: #e8e8ea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40rpx;
+    color: #3c464e;
+    margin-right: 40rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+  }
+  
+  .option-item.selected .option-label {
+    background: #3c8cff;
+    color: #fff;
+  }
+  
+  .option-text {
+    font-size: 40rpx;
+    color: #333;
+    flex: 1;
+  }
+  
+  /* ================= 听力与写作专属样式 ================= */
+  .audio-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30rpx 0 50rpx 0;
+    padding: 20rpx;
+    background-color: #f0f7ff;
+    border-radius: 20rpx;
+  }
+  
+  .audio-player {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .writing-area {
+    width: 100%;
+    height: 500rpx;
+    background-color: #f7f8fa;
+    border-radius: 20rpx;
+    padding: 30rpx;
+    box-sizing: border-box;
+    font-size: 32rpx;
+    color: #333;
+    line-height: 1.6;
+    border: 2rpx solid #e8e8e8;
+    margin-top: 20rpx;
+  }
+  
+  .writing-area::placeholder {
+    color: #ccc;
+  }
+
+  /* ...保留其他的样式... */
+
+.main-swiper {
+    flex: 1; 
+    width: 100%; /* 防止宽度坍塌 */
+    height: 100%;
+  }
+  
+  /* ======== 新增防止白屏的满高容器 ======== */
+  .swiper-content-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .full-height-box {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* 把 .material-content 改成 text 的展现方式，更好支持换行符 */
+  .material-content {
+    font-size: 34rpx;
+    line-height: 1.8;
+    color: #333;
+    padding-bottom: 40rpx;
+    display: block;      /* 确保文本可以正常占据高度 */
+    white-space: pre-wrap; /* 识别数据库里的 \n 换行符 */
+  }
+  
+  /* ...保留其他的样式... */

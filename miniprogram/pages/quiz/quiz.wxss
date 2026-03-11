@@ -1,0 +1,312 @@
+page {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  }
+  
+  .page-container {
+    padding: 20rpx 30rpx;
+    position: relative;
+  }
+  
+  .top-bg-glow {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 400rpx;
+    background: radial-gradient(circle at top right, rgba(240,242,248,0.8) 0%, rgba(248,249,251,0) 70%);
+    z-index: -1;
+  }
+  
+  /* --- 公共分段标题 --- */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20rpx 0 30rpx;
+  }
+  
+  .section-title {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #2c3038;
+  }
+  
+  /* --- 碎片化刷题 --- */
+  .tabs {
+    display: flex;
+    gap: 40rpx;
+    margin-bottom: 30rpx;
+  }
+  
+  .fragment-cards {
+    white-space: nowrap;
+    width: 100%;
+    padding-bottom: 20rpx;
+  }
+  
+  .f-card {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180rpx;
+    background: #fff;
+    border-radius: 20rpx;
+    padding: 30rpx 20rpx;
+    margin-right: 20rpx;
+    box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.02);
+  }
+
+.icon-box {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 20rpx;
+    display: flex;             /* 开启 flex 布局 */
+    align-items: center;       /* 垂直居中 */
+    justify-content: center;   /* 水平居中 */
+    font-size: 45rpx;          /* 设置 Emoji 的大小 */
+    margin-bottom: 20rpx;
+  }
+
+  .red { background: linear-gradient(135deg, #fff2f2, #ffe4e4); }
+  .orange { background: linear-gradient(135deg, #fff7eb, #ffead0); }
+  .yellow { background: linear-gradient(135deg, #fffbe6, #fff1b8); }
+  
+  .f-title {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8rpx;
+  }
+  
+  .f-progress {
+    font-size: 22rpx;
+    color: #999;
+  }
+  
+  /* --- 按模块刷题 --- */
+  .module-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20rpx;
+  }
+  
+  .m-card {
+    height: 160rpx;
+    border-radius: 20rpx;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .m-card.blue { background: linear-gradient(135deg, #eef4ff, #d8e6ff); }
+  .m-card.gold { background: linear-gradient(135deg, #fff8ec, #fae6c8); }
+  .m-card.orange { background: linear-gradient(135deg, #fff3eb, #fcdcc6); }
+  .m-card.purple { background: linear-gradient(135deg, #f2f5ff, #dbe2ff); }
+  
+  .m-content {
+    padding: 24rpx 24rpx 0;
+    z-index: 2;
+  }
+  
+  .m-title {
+    display: block;
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 6rpx;
+  }
+  
+  .m-count {
+    font-size: 22rpx;
+    color: #7a869a;
+  }
+  
+  .m-bottom-bar {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 10rpx 24rpx;
+    font-size: 22rpx;
+    color: #666;
+    z-index: 2;
+    width: fit-content;
+    border-top-right-radius: 20rpx;
+  }
+  
+  .m-watermark {
+    position: absolute;
+    right: -10rpx; bottom: 20rpx;
+    width: 90rpx; height: 90rpx;
+    opacity: 0.15;
+    border-radius: 16rpx;
+    transform: rotate(-10deg);
+    z-index: 1;
+  }
+  
+  .radio-mark { background: #6da5ff; }
+  .book-mark { background: #ffbc4b; }
+  .pen-mark { background: #ff914d; }
+  .chat-mark { background: #718cff; }
+  
+  /* --- 按年份刷题 --- */
+  .more-btn {
+    font-size: 26rpx;
+    color: #888;
+    background: #fff;
+    padding: 10rpx 28rpx;
+    border-radius: 28rpx;
+    border: 1px solid #eee;
+  }
+  
+  .year-list {
+    white-space: nowrap;
+    width: 100%;
+  }
+  
+  .year-item {
+    display: inline-block;
+    padding: 14rpx 40rpx;
+    background: #fff;
+    border-radius: 16rpx;
+    margin-right: 20rpx;
+    color: #666;
+    font-size: 26rpx;
+    border: 2rpx solid transparent;
+  }
+  
+  .year-item.active {
+    color: #222;
+    font-weight: bold;
+    border-color: #e0e0e0;
+    box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.03);
+  }
+  
+  /* --- 试卷列表 --- */
+  .paper-swiper {
+    height: 400rpx;
+    margin-top: 20rpx;
+  }
+  
+  .paper-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20rpx;
+  }
+  
+  .p-card {
+    background: #fff;
+    border-radius: 20rpx;
+    padding: 30rpx 24rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.02);
+  }
+  
+  .p-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+  }
+  
+  .p-title {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .p-subtitle {
+    font-size: 22rpx;
+    color: #999;
+  }
+  
+  .p-download {
+    width: 40rpx; height: 40rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a0a5b1;
+    font-weight: bold;
+  }
+
+  /* 自定义返回按钮样式 */
+.custom-back-btn {
+    position: relative;
+    z-index: 10; /* 确保在光晕层之上，可以被点击 */
+    padding: 60rpx 0 0rpx 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .back-arrow {
+    font-size: 40rpx;
+    color: #2c3038;
+    font-weight: 400;
+    padding: 10rpx 20rpx 10rpx 0; /* 增大点击热区 */
+    margin-left: -20rpx;
+  }
+
+
+
+  /* =========================================
+   新增：碎片化模块各图标底色与文字颜色配置
+   用于实现不同模块的卡片图标色彩差异化
+========================================= */
+
+/* 红色主题 (例如：短篇新闻、写作模块) */
+.icon-box.red { background-color: #ffebeb; color: #ff4d4f; }
+
+/* 橙色主题 (例如：长对话、翻译模块) */
+.icon-box.orange { background-color: #fff2e8; color: #fa8c16; }
+
+/* 黄色主题 (例如：短文理解、阅读单词) */
+.icon-box.yellow { background-color: #feffe6; color: #fadb14; }
+
+/* 蓝色主题 (例如：选词填空、听力单词) */
+.icon-box.blue { background-color: #e6f7ff; color: #1890ff; }
+
+/* 绿色主题 (例如：信息匹配) */
+.icon-box.green { background-color: #f6ffed; color: #52c41a; }
+
+/* 紫色主题 (例如：仔细阅读) */
+.icon-box.purple { background-color: #f9f0ff; color: #722ed1; }
+
+/* .tab-item.active {
+  color: #222;
+  font-weight: bold;
+  position: relative;
+}
+.tab-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: -6rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30rpx;
+  height: 6rpx;
+  background-color: #FF6B00;
+  border-radius: 4rpx;
+} */
+
+.tab-item {
+    color: #9094a0;
+    font-size: 30rpx;
+    position: relative;
+    padding-bottom: 10rpx;
+  }
+  
+  .tab-item.active {
+    color: #2c3038;
+    font-weight: bold;
+    font-size: 34rpx;
+  }
+  
+  .tab-item.active::after {
+    content: "";
+    position: absolute;
+    bottom: -4rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32rpx;
+    height: 6rpx;
+    background: #ff8c00;
+    border-radius: 4rpx;
+  }

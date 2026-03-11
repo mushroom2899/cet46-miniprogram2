@@ -1,0 +1,197 @@
+page {
+    height: 100%;
+  }
+  .container {
+    width: 100vw;
+    height: 100vh;
+    /* 渐变背景色 */
+    background: linear-gradient(to bottom, #F8F5F8, #B2C3D3);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* 导航栏样式 */
+  .custom-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+  }
+  .nav-content {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30rpx;
+    box-sizing: border-box;
+  }
+  .nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    color: #555;
+  }
+  .nav-right {
+    transform: translateY(60rpx); 
+    /* margin-top: 60rpx; */
+  }
+  .nav-icon {
+    font-size: 40rpx;
+    margin: 0 15rpx;
+  }
+  .nav-text {
+    margin-left: 20rpx;
+    font-size: 30rpx;
+  }
+  
+  /* 单词区域 */
+  .main-content {
+    width: 95%;
+  }
+  .word-header {
+    padding: 40rpx 60rpx 120rpx 60rpx;
+  }
+  .spell-row {
+    display: flex;
+    align-items: baseline;
+  }
+  .spell {
+    font-size: 100rpx;
+    font-weight: bold;
+    color: #1a1a1a;
+  }
+  .spell-row {
+    display: flex;
+    align-items: center; /* 改为居中对齐，让圆点和文字对齐得更好 */
+  }
+  .spell {
+    font-size: 90rpx;
+    font-weight: bold;
+    color: #1a1a1a;
+  }
+  
+  /* --- 三个进度点样式 --- */
+  .study-status {
+    display: flex;
+    align-items: center;
+    margin-left: 20rpx;
+  }
+  .dots-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 40rpx; /* 控制三个点的总体高度 */
+  }
+  .dot {
+    width: 8rpx;
+    height: 8rpx;
+    border-radius: 50%;
+    background-color: #ccc; /* 默认未完成的灰色 */
+  }
+  .dot-green {
+    background-color: #28C76F; /* 完成后的绿色 */
+    box-shadow: 0 0 10rpx rgba(40, 199, 111, 0.6); /* 加一点发光效果更精致 */
+  }
+  .phonetic-row {
+    display: flex;
+    align-items: center;
+    margin-top: 40rpx;
+  }
+  .accent-tag {
+    background: #d4d3d2;
+    color: #3c3b39;
+    font-size: 26rpx;
+    padding: 4rpx 12rpx;
+    border-radius: 26rpx;
+    margin-right: 15rpx;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .phonetic {
+    color: #666;
+    font-size: 32rpx;
+    line-height: 1;
+  }
+
+  .instruction {
+    margin-top: 60rpx;
+    font-size: 26rpx;
+    color: #888;
+  }
+  
+  /* 选项样式 - 毛玻璃感 */
+  .options-list {
+    padding: 20rpx 30rpx;
+    flex: 1;
+  }
+  .option-item {
+    background: rgba(255, 255, 255, 0.6);
+    margin-bottom: 20rpx;
+    padding: 40rpx 30rpx;
+    border-radius: 24rpx;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+  }
+    /* 答对的样式 - 绿色 */
+    .option-item.correct {
+        background: #28C76F !important; /* 护眼绿 */
+        box-shadow: 0 4rpx 12rpx rgba(40, 199, 111, 0.3);
+      }
+      .option-item.correct .part-of-speech,
+      .option-item.correct .option-text {
+        color: #FFFFFF !important;
+      }
+      
+      /* 答错的样式 - 红色 */
+      .option-item.wrong {
+        background: #EA5455 !important; /* 警告红 */
+        box-shadow: 0 4rpx 12rpx rgba(234, 84, 85, 0.3);
+      }
+      .option-item.wrong .part-of-speech,
+      .option-item.wrong .option-text {
+        color: #FFFFFF !important;
+      }
+  .part-of-speech {
+    font-size: 24rpx;
+    color: #999;
+    margin-bottom: 10rpx;
+  }
+  .option-text {
+    font-size: 32rpx;
+    color: #333;
+  }
+  
+  /* 底部设计 */
+  .footer-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40rpx 0 60rpx;
+  }
+  .action-text {
+    font-size: 32rpx;
+    color: #555;
+    font-weight: bold;
+    letter-spacing: 2rpx;
+  }
+
+  .action-line {
+    width: 40rpx;
+    height: 6rpx;
+    margin-top: 10rpx;
+    border-radius: 3rpx;
+    transition: background-color 0.3s ease; /* 增加平滑过渡动画 */
+  }
+  
+  /* 红色：未答题看答案状态 */
+  .line-red {
+    background: #FF5A5A;
+  }
+  
+  /* 绿色：已答题继续状态 */
+  .line-green {
+    background: #28C76F;
+  }

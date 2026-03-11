@@ -1,0 +1,17 @@
+<!--components/custom-modal/custom-modal.wxml-->
+<view class="modal-mask" wx:if="{{visible}}" bindtap="onCancel" catchtouchmove="preventTouchMove">
+  
+  <view class="modal-content" catchtap="preventBubble">
+    
+    <view class="modal-header">
+      <view class="header-btn btn-cancel" bindtap="onCancel">{{cancelText}}</view>
+      <view class="modal-title" wx:if="{{title}}">{{title}}</view>
+      <view class="header-btn btn-confirm" bindtap="onConfirm">{{confirmText}}</view>
+    </view>
+    
+    <scroll-view scroll-y class="modal-body">
+      <slot></slot>
+    </scroll-view>
+
+  </view>
+</view>

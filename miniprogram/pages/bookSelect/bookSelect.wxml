@@ -1,0 +1,39 @@
+<!--pages/bookSelect/bookSelect.wxml-->
+  <view class="container">
+  <view class="custom-nav">
+    <view class="custom-back-btn" bindtap="goBack">
+      <text class="back-arrow">〈</text>
+    </view>
+    <text class="large-title">选择词书</text>
+  </view>
+
+  <view class="search-bar">
+    <icon type="search" size="24" color="#999"></icon>
+    <input placeholder=" 输入词书名称搜索" 
+           placeholder-class="search-placeholder" 
+           bindinput="onSearchInput"
+           value="{{searchKeyword}}" />
+           
+  </view>
+  
+  <scroll-view scroll-x class="main-tabs" enable-flex>
+  <view class="tab-item {{activeTab === 'all' ? 'active' : ''}}" bindtap="switchTab" data-category="all">全部</view>
+  <view class="tab-item {{activeTab === 'CET4' ? 'active' : ''}}" bindtap="switchTab" data-category="CET4">四级</view>
+  <view class="tab-item {{activeTab === 'CET6' ? 'active' : ''}}" bindtap="switchTab" data-category="CET6">六级</view>
+</scroll-view>
+
+  <scroll-view scroll-y class="book-list">
+    <block wx:for="{{books}}" wx:key="id">
+      <view class="book-item" bindtap="onSelectBook" data-book="{{item}}">
+        <view class="book-cover-wrapper">
+          <image class="book-cover" src="{{item.cover}}" mode="aspectFill"></image>
+        </view>
+        <view class="book-info">
+          <view class="book-title">{{item.title}}</view>
+          <view class="book-desc">{{item.desc}}</view>
+          <view class="book-count">{{item.count}} 词</view>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+</view>

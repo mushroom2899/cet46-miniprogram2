@@ -1,0 +1,93 @@
+<view class="container">
+  <!-- <view class="header" wx:if="{{questions.length > 0}}">
+    <text class="progress">{{currentIndex + 1}} / {{questions.length}}</text>
+  </view> -->
+  <view class="custom-nav" style="height: {{navBarHeight}}px;">
+    <view class="nav-content" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+      <view class="nav-left" bindtap="goBack">
+        <text class="nav-icon">〈</text>
+        <text class="progress">{{currentIndex + 1}} / {{questions.length}}</text>
+      </view>
+      <view class="nav-right">
+        <text class="nav-icon">↺</text>
+      </view>
+    </view>
+  </view>
+
+  <swiper class="main-swiper" current="{{currentIndex}}" bindchange="onSwiperChange" wx:if="{{questions.length > 0}}">
+    <swiper-item wx:for="{{questions}}" wx:key="_id">
+      
+      <view class="swiper-content-wrapper">
+        
+        <scroll-view wx:if="{{item.category.major_module === 'listening'}}" class="standard-layout" scroll-y>
+          <view class="q-title">{{index + 1}}. {{item.title}}</view>
+          <view class="audio-container" wx:if="{{item.audio_url}}">
+            <audio src="{{item.audio_url}}" name="听力材料" author="四级听力" controls class="audio-player"></audio>
+          </view>
+          <view class="q-content">{{item.content}}</view>
+          <view class="q-source">{{item.source_text || item.source}}</view>
+          <view class="options-box">
+            <view class="option-item {{userAnswers[item._id] === opt.label ? 'selected' : ''}}" 
+                  wx:for="{{item.options}}" wx:for-item="opt" wx:key="label"
+                  bindtap="handleOptionTap" data-id="{{item._id}}" data-label="{{opt.label}}">
+              <view class="option-label">{{opt.label}}</view>
+              <view class="option-text">{{opt.text}}</view>
+            </view>
+          </view>
+        </scroll-view>
+
+        <scroll-view wx:elif="{{item.category.major_module === 'writing'}}" class="standard-layout" scroll-y>
+          <view class="q-title">{{index + 1}}. {{item.title}}</view>
+          <view class="q-content">{{item.content}}</view>
+          <view class="q-source">{{item.source_text || item.source}}</view>
+          <textarea class="writing-area" placeholder="请在此输入你的作答..." value="{{userAnswers[item._id]}}" bindinput="handleTextInput" data-id="{{item._id}}" maxlength="-1"></textarea>
+        </scroll-view>
+
+        <view wx:else class="full-height-box">
+          
+          <view wx:if="{{item.has_material}}" class="split-layout">
+            <scroll-view class="material-area" scroll-y style="height: {{100 - bottomPanelHeight}}vh;">
+              <text class="material-content">{{item.material_text}}</text>
+            </scroll-view>
+
+            <view class="question-drawer" style="height: {{bottomPanelHeight}}vh;">
+              <view class="drag-handle-wrap" catchtouchmove="onDragMove">
+                <view class="drag-bar"></view>
+              </view>
+
+              <scroll-view class="question-scroll" scroll-y>
+                <view class="q-title">{{index + 1}}. {{item.title}}</view>
+                <view class="q-content">{{item.content}}</view>
+                <view class="q-source">{{item.source_text || item.source}}</view>
+
+                <view class="options-box">
+                  <view class="option-item {{userAnswers[item._id] === opt.label ? 'selected' : ''}}" 
+                        wx:for="{{item.options}}" wx:for-item="opt" wx:key="label"
+                        bindtap="handleOptionTap" data-id="{{item._id}}" data-label="{{opt.label}}">
+                    <view class="option-label">{{opt.label}}</view>
+                    <view class="option-text">{{opt.text}}</view>
+                  </view>
+                </view>
+              </scroll-view>
+            </view>
+          </view>
+
+          <scroll-view wx:else class="standard-layout" scroll-y>
+            <view class="q-title">{{index + 1}}. {{item.title}}</view>
+            <view class="q-content">{{item.content}}</view>
+            <view class="q-source">{{item.source_text || item.source}}</view>
+
+            <view class="options-box">
+              <view class="option-item {{userAnswers[item._id] === opt.label ? 'selected' : ''}}" 
+                    wx:for="{{item.options}}" wx:for-item="opt" wx:key="label"
+                    bindtap="handleOptionTap" data-id="{{item._id}}" data-label="{{opt.label}}">
+                <view class="option-label">{{opt.label}}</view>
+                <view class="option-text">{{opt.text}}</view>
+              </view>
+            </view>
+          </scroll-view>
+
+        </view> </view> </swiper-item>
+  </swiper>
+
+</view>

@@ -1,0 +1,174 @@
+<view class="page-container">
+  <view class="custom-nav" style="height: {{navBarHeight}}px;">
+    <view class="nav-content" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+      <view class="nav-left" bindtap="goBack">
+        <text class="back-icon">‹</text>
+      </view>
+      <view class="nav-title">个人中心</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="main-scroll" style="padding-top: {{navBarHeight}}px;">
+
+    <view class="user-profile-section">
+      <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/avatar.png'}}" mode="aspectFill"></image>
+      </button>
+      
+      <view class="user-info">
+        <input type="nickname" class="user-name-input" value="{{userInfo.nickName}}" bindblur="onInputNickname" placeholder="点击设置昵称"/>
+        
+        <text class="user-id">ID: {{shortId ? shortId : '获取中'}}</text>
+      </view>
+    </view>
+
+    <view class="settings-card">
+      <view class="list-item" hover-class="item-hover">
+        <view class="label-box">
+          <text class="label">账号信息</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="settings-card">
+      <view class="list-item" hover-class="item-hover" bindtap="openLearnCountModal">
+        <view class="label-box">
+          <text class="label">每组学习单词量</text>
+        </view>
+        <view class="value-box">
+            <text class="value">{{currentLearnCount}}个</text>
+          <!-- <text class="arrow">›</text> -->
+        </view>
+      </view>
+
+      <view class="divider"></view>
+
+      <view class="list-item" hover-class="item-hover" bindtap="openReviewCountModal">
+        <view class="label-box">
+          <text class="label">每组复习单词量</text>
+        </view>
+        <view class="value-box">
+            <text class="value">{{currentReviewCount}}个</text>
+          <!-- <text class="arrow">›</text> -->
+        </view>
+      </view>
+
+      <!-- <view class="divider"></view>
+
+      <view class="list-item" hover-class="item-hover">
+        <view class="label-box">
+          <text class="label">新学单词首次复习时间</text>
+        </view>
+        <view class="value-box">
+          <text class="value">全部次日复习</text>
+          <text class="arrow">›</text>
+        </view>
+      </view> -->
+    </view>
+
+    <view class="settings-card">
+      <view class="list-item" hover-class="item-hover" bindtap="openAccentTypeModal">
+        <view class="label-box">
+          <text class="label">单词发音类型</text>
+        </view>
+        <view class="value-box">
+            <text class="value">{{currentAccentType === 2 ? '美式' : '英式'}}</text>
+          <!-- <text class="arrow">›</text> -->
+        </view>
+      </view>
+
+      <view class="divider"></view>
+
+      <view class="list-item" hover-class="item-hover">
+        <view class="label-box">
+          <text class="label">自动发音</text>
+        </view>
+        <view class="value-box">
+          <text class="value">单词发音</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+
+    </view>
+
+    <view class="settings-card">
+      <view class="list-item">
+        <view class="label-box">
+          <text class="label">拆分助记</text>
+          <text class="sub-label">学习时自动展示单词拆分记忆法</text>
+        </view>
+        <switch checked="{{true}}" color="#FF6B00" class="custom-switch" />
+      </view>
+
+      <view class="divider"></view>
+
+      <view class="list-item">
+        <view class="label-box">
+          <text class="label">混淆项辨析</text>
+          <text class="sub-label">答错时显示干扰项的真实词义</text>
+        </view>
+        <switch checked="{{true}}" color="#FF6B00" class="custom-switch" />
+      </view>
+
+      <view class="divider"></view>
+
+      <view class="list-item" hover-class="item-hover">
+        <view class="label-box">
+          <text class="label">学习提醒</text>
+        </view>
+        <view class="value-box">
+          <text class="value">8:30</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="logout-btn-card" hover-class="item-hover" bindtap="handleLogout">
+      <text class="logout-text">退出登录</text>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+
+  <custom-modal 
+      visible="{{isLearnModalVisible}}" 
+      title="每组学习单词量" 
+      bind:cancel="closeLearnCountModal" 
+      bind:confirm="confirmLearnCountModal">
+      <view class="radio-group">
+        <view class="radio-item" wx:for="{{[5, 10, 15, 20]}}" wx:key="*this" bindtap="selectTempLearnCount" data-val="{{item}}">
+          <text class="radio-text">{{item}}个</text>
+          <icon type="success_no_circle" size="20" color="#FF6B00" wx:if="{{tempLearnCount === item}}"></icon>
+        </view>
+      </view>
+  </custom-modal>
+  <custom-modal 
+      visible="{{isReviewModalVisible}}" 
+      title="每组复习单词量" 
+      bind:cancel="closeReviewCountModal" 
+      bind:confirm="confirmReviewCountModal">
+      <view class="radio-group">
+        <view class="radio-item" wx:for="{{[10, 15, 20, 30]}}" wx:key="*this" bindtap="selectTempReviewCount" data-val="{{item}}">
+          <text class="radio-text">{{item}}个</text>
+          <icon type="success_no_circle" size="20" color="#FF6B00" wx:if="{{tempReviewCount === item}}"></icon>
+        </view>
+      </view>
+    </custom-modal>
+
+    <custom-modal 
+      visible="{{isAccentModalVisible}}" 
+      title="单词发音类型" 
+      bind:cancel="closeAccentTypeModal" 
+      bind:confirm="confirmAccentTypeModal">
+      <view class="radio-group">
+        <view class="radio-item" bindtap="selectTempAccent" data-val="{{2}}">
+          <text class="radio-text">美式发音 (US)</text>
+          <icon type="success_no_circle" size="20" color="#FF6B00" wx:if="{{tempAccentType === 2}}"></icon>
+        </view>
+        <view class="radio-item" bindtap="selectTempAccent" data-val="{{1}}">
+          <text class="radio-text">英式发音 (UK)</text>
+          <icon type="success_no_circle" size="20" color="#FF6B00" wx:if="{{tempAccentType === 1}}"></icon>
+        </view>
+      </view>
+    </custom-modal>
+</view>

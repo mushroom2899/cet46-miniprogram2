@@ -1,0 +1,375 @@
+/* pages/dashboard/dashboard.wxss */
+.container {
+    background-color: #f4f4f4;
+    min-height: 100vh;
+    padding: 32rpx 24rpx;
+  }
+  
+  /* 顶部导航 */
+  .header {
+      display: flex;
+      align-items: center; /* 确保返回键在垂直方向居中 */
+      padding: 60rpx 30rpx 20rpx 30rpx; 
+      position: relative; /* 必须设置，作为标题居中的参考基准 */
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .custom-back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10; /* 确保返回键在标题层之上，防止无法点击 */
+      margin-left: -20rpx; 
+    }
+    
+    .back-arrow {
+      font-size: 40rpx;
+      color: #2c3038;
+      font-weight: 400;
+      line-height: 1; 
+    }
+    
+    .title {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center; /* 文字水平居中 */
+      top: 50%;
+      transform: translateY(calc(-50% + 20rpx));
+      font-size: 36rpx;
+      font-weight: bold;
+      color: #333;
+      z-index: 1; /* 层级低于返回键 */
+      pointer-events: none; /* 防止标题层遮挡返回键的点击事件 */
+    }
+  
+  /* 通用 section */
+  .section {
+    margin-bottom: 32rpx;
+    width: 95%;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 36rpx;
+    width: 95%;
+  }
+  .section-title {
+    font-size: 40rpx;
+    font-weight: bold;
+    color: #333;
+  }
+  .change-book-btn {
+    background-color: #ff7a45;
+    color: #fff;
+    padding: 12rpx 24rpx;
+    border-radius: 50rpx;
+    font-size: 28rpx;
+    margin-right: -5%;
+  }
+  
+  /* 正在学习模块 */
+  .learning-section {
+    margin: 42rpx 32rpx 32rpx 32rpx;
+    border-radius: 24rpx;
+  }
+  .main-learning-card {
+      background-color: #ffffff;
+      border-radius: 24rpx;
+      padding: 30rpx;
+      box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.02);
+    }
+  
+    /* 第一行：书本与添加按钮 */
+    .book-row {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+      margin-bottom: 30rpx;
+    }
+  .book-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 24rpx;
+    margin-bottom: 32rpx;
+  }
+  /* .book-cover {
+    width: 160rpx;
+    height: 220rpx;
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    border-radius: 16rpx;
+    padding: 16rpx;
+    position: relative;
+    color: #fff;
+  }
+  .cover-badge {
+    font-size: 28rpx;
+    font-weight: bold;
+    margin-bottom: 8rpx;
+  }
+  .cover-text {
+    font-size: 24rpx;
+    margin-bottom: 16rpx;
+  }
+  .cover-placeholder {
+    display: flex;
+    flex-direction: column;
+    gap: 12rpx;
+  } */
+  .book-cover {
+    width: 160rpx;
+    height: 220rpx;
+    background-color: #b3a2c7;
+    border-radius: 12rpx;
+    /* 重点：千万不要在这里写 padding:20rpx; 否则图片撑不满 */
+    position: relative;
+    overflow: hidden; /* 保证里面的图片不会溢出圆角边界 */
+  }
+  
+  /* 真实图片的样式，100% 填充满容器 */
+  .cover-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  
+  /* 兜底的占位排版样式 (把原先 book-cover 里的 padding 搬到了这里) */
+  .cover-fallback {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 20rpx;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* 封面占位符细节 */
+  .cover-badge { font-size: 24rpx; font-weight: bold; }
+  .cover-text { font-size: 20rpx; opacity: 0.8; margin-top: 5rpx; }
+  .cover-placeholder { margin-top: auto; }
+  .cover-placeholder view { height: 10rpx; background: rgba(255,255,255,0.3); margin-top: 10rpx; border-radius: 4rpx; }
+  .line1, .line2, .line3 {
+    height: 24rpx;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 4rpx;
+  }
+  .line1 { width: 80%; }
+  .line2 { width: 60%; }
+  .line3 { width: 70%; }
+  .paper-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+    margin-left:60rpx;
+  }
+  .add-paper {
+    width: 160rpx;
+    height: 195rpx;
+    border: 2rpx dashed #ddd;
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .add-icon {
+    font-size: 48rpx;
+    color: #999;
+  }
+  .paper-label {
+    font-size: 28rpx;
+    color: #333;
+  }
+  .more-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6rpx;
+    margin-top: 16rpx;
+  }
+  .dot {
+    width: 8rpx;
+    height: 8rpx;
+    background-color: #999;
+    border-radius: 50%;
+  }
+  
+  /* 词汇状态 */
+  .vocab-status {
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+  }
+  .vocab-item {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+  }
+  .checkbox {
+    width: 32rpx;
+    height: 32rpx;
+    border: 2rpx solid #999;
+    border-radius: 6rpx;
+  }
+  .vocab-label {
+    font-size: 28rpx;
+    color: #666;
+  }
+  .progress-bar {
+    position: relative;
+    height: 8rpx;
+    background-color: #eee;
+    border-radius: 4rpx;
+  }
+  .progress-dot {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16rpx;
+    height: 16rpx;
+    background-color: #ff7a45;
+    border-radius: 50%;
+  }
+  .progress-track {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0.68%; /* 11/1603 ≈ 0.68% */
+    background-color: #ff7a45;
+    border-radius: 4rpx;
+  }
+  .progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 28rpx;
+    color: #666;
+  }
+    
+    /* 第三行：进度条 */
+    .progress-section {
+      width: 100%;
+    }
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 24rpx;
+      color: #999;
+      margin-top: 10rpx;
+    }
+  
+  /* 我的数据模块 */
+  .data-section {
+    display: flex;
+    flex-direction: column;
+    gap: 36rpx;
+    margin-top: 24rpx;
+  }
+  .data-card {
+    background-color: #fff;
+    padding: 32rpx;
+    border-radius: 24rpx;
+    margin-top: -24rpx;
+  }
+  .calendar-card {
+    background-color: #fff;
+    padding: 32rpx;
+    border-radius: 24rpx;
+  }
+  .data-header, .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32rpx;
+  }
+  .data-title, .calendar-title {
+    font-size: 32rpx;
+    color: #333;
+  }
+  .data-more, .calendar-more {
+    font-size: 32rpx;
+    color: #999;
+  }
+  .data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32rpx;
+  }
+  /* 修改 data-item 保持垂直排列，以便头部和数值上下分行 */
+  .data-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12rpx; /* 控制上下间距 */
+    }
+    
+    /* 新增：横向排列图标和文字 */
+    .item-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center; /* 垂直居中对齐 */
+    }
+    
+    /* 调整 Emoji 样式 */
+    .emoji-icon {
+      font-size: 30rpx;
+      line-height: 1;
+      margin-right: 10rpx; 
+    }
+    
+    /* 调整文字标签样式以贴近图片 */
+    .data-label {
+      font-size: 26rpx;
+      color: #333333;
+    }
+    
+    /* 调整数值样式 */
+    .data-value {
+      font-size: 44rpx;
+      font-weight: bold;
+      color: #333333;
+    }
+    
+    .unit {
+      font-size: 26rpx;
+      font-weight: normal;
+      color: #888888;
+      margin-left: 4rpx;
+    }
+  
+  
+  /* 日历模块 */
+  .calendar-week {
+    display: flex;
+    justify-content: space-between;
+  }
+  .week-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16rpx;
+  }
+  .week-label {
+    font-size: 24rpx;
+    color: #999;
+  }
+  .day-item {
+    width: 64rpx;
+    height: 64rpx;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #333333;
+  }
+  .day-item.active {
+    background-color: #ff7a45;
+    color: #fff;
+  }
+  .day-item.today {
+    font-weight: bold;
+  }

@@ -1,0 +1,41 @@
+<!--pages/index/index.wxml-->
+<view class="page-container">
+  <!-- 顶部头像 -->
+  <view class="avatar-wrapper" bindtap="navigateToUserHome">
+    <image class="avatar" src="{{userInfo.avatarUrl || '/images/avatar.png'}}" mode="aspectFill"></image>
+  </view>
+
+  <!-- 中间签到卡片 -->
+  <!-- <view class="checkin-card" bindtap="onCheckinTap">
+    <view class="checkin-icon">📅</view>
+    <text class="checkin-text">签到</text>
+    <text class="checkin-date">{{currentDate}}</text>
+  </view> -->
+  <view class="checkin-card {{isCheckedIn ? 'checked' : ''}}" bindtap="onCheckinTap">
+    <view class="checkin-icon">📅</view>
+    <text class="checkin-text">{{isCheckedIn ? '已签到' : '签到'}}</text>
+    <text class="checkin-date">{{currentDate}}</text>
+  </view>
+
+  <!-- 底部 Learn/Review 按钮区 -->
+  <view class="action-buttons">
+    <view class="action-btn" bindtap="onLearnTap">
+      <text class="action-title">Learn</text>
+      <text class="action-number">{{learnNumber}}</text>
+    </view>
+    <view class="action-btn" bindtap="onReviewTap">
+      <text class="action-title">Review</text>
+      <text class="action-number">{{reviewNumber}}</text>
+    </view>
+  </view>
+
+  <!-- 底部 TabBar -->
+  <view class="bottom-tabbar">
+    <view class="tab-item" bindtap="switchTab" data-tab="quiz">
+      <view class="tab-icon">🎯刷题</view>
+    </view>
+    <view class="tab-item" bindtap="switchTab" data-tab="dashboard">
+      <view class="tab-icon">📈仪表盘</view>
+    </view>
+  </view>
+</view>

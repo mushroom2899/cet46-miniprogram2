@@ -1,0 +1,232 @@
+page {
+    height: 100%;
+    background: #F7F8FA; /* 更柔和的高级灰白背景 */
+  }
+  
+  .page-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* --- 沉浸式导航栏 --- */
+  .custom-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    /* 导航栏背景透明化，随页面滚动显得更沉浸 */
+    background: rgba(247, 248, 250, 0.95); 
+    backdrop-filter: blur(10px);
+  }
+  .nav-content {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .nav-left {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 30rpx;
+  }
+  .nav-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 34rpx; 
+    color: #333;
+    font-weight: bold; 
+  }
+  .back-icon {
+    font-size: 70rpx;
+    color: #333;
+    font-weight: 300;
+    transform: translateY(-4rpx); 
+  }
+  
+  /* --- 内容滚动区 --- */
+  .main-scroll {
+    flex: 1;
+    box-sizing: border-box;
+  }
+  
+  /* --- 用户资料头部 --- */
+  .user-profile-section {
+    display: flex;
+    align-items: center;
+    padding: 40rpx 40rpx 60rpx 40rpx;
+  }
+  /* .avatar-wrapper {
+    width: 130rpx;
+    height: 130rpx;
+    border-radius: 50%;
+    background: #fff;
+    padding: 6rpx;
+    box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05);
+    margin-right: 30rpx;
+  } */
+  .avatar-wrapper {
+    padding: 0;
+    margin: 0;
+    margin-right: 30rpx;
+    width: 130rpx !important;
+    height: 130rpx !important;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05); 
+  }
+  .avatar-wrapper::after {
+    border: none;
+  }
+  .user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: block;
+  }
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .user-name {
+    font-size: 40rpx;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 8rpx;
+  }
+
+    /* 将输入框伪装成大标题 */
+    .user-name-input {
+        font-size: 40rpx;
+        font-weight: bold;
+        color: #222;
+        margin-bottom: 12rpx;
+        min-width: 300rpx; /* 保证点击区域够大 */
+      }
+
+  .user-id {
+    font-size: 26rpx;
+    color: #888;
+    background: rgba(0,0,0,0.04);
+    padding: 4rpx 16rpx;
+    border-radius: 20rpx;
+    display: inline-block;
+    align-self: flex-start;
+  }
+  
+  /* --- 高级质感设置卡片 --- */
+  .settings-card {
+    background: #FFFFFF;
+    border-radius: 24rpx;
+    margin: 0 30rpx 30rpx 30rpx;
+    padding: 10rpx 30rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.02); /* 极其克制的弥散阴影 */
+  }
+  
+  /* 列表项布局 */
+  .list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30rpx 0;
+    min-height: 50rpx;
+  }
+  
+  /* 点击反馈效果 */
+  .item-hover {
+    opacity: 0.6;
+  }
+  
+  /* 分割线 */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background-color: #F2F2F5; /* 极浅的分割线 */
+  }
+  
+  /* 左侧文字区 */
+  .label-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-right: 20rpx;
+  }
+  .label {
+    font-size: 32rpx;
+    color: #333333;
+    font-weight: 500;
+  }
+  .sub-label {
+    font-size: 24rpx;
+    color: #999999;
+    margin-top: 10rpx;
+    line-height: 1.4;
+  }
+  
+  /* 右侧数值区 */
+  .value-box {
+    display: flex;
+    align-items: center;
+  }
+  .value {
+    font-size: 32rpx;
+    color: #888888;
+  }
+  .arrow {
+    font-size: 40rpx;
+    color: #CCCCCC;
+    margin-left: 10rpx;
+    font-family: "SimSun", sans-serif;
+    transform: translateY(-2rpx);
+  }
+  
+  /* Switch 开关缩放对齐 */
+  .custom-switch {
+    transform: scale(0.85);
+    margin-right: -10rpx; 
+  }
+  
+/* --- 退出登录按钮 --- */
+.logout-btn-card {
+    background: #FF6B00;
+    border-radius: 24rpx;
+    margin: 50rpx 30rpx 30rpx 30rpx;
+    padding: 32rpx 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.02);
+  }
+  
+  .logout-text {
+    font-size: 36rpx;
+    color: #FFFFFF; 
+    font-weight: bold;
+    letter-spacing: 2rpx;
+  }
+
+  .bottom-space {
+    height: 100rpx;
+  }
+
+  /* --- 弹窗内部的单选列表样式 --- */
+.radio-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30rpx 10rpx;
+    border-bottom: 1rpx solid #F5F5F5;
+  }
+  .radio-item:last-child {
+    border-bottom: none;
+  }
+  .radio-text {
+    font-size: 32rpx;
+    color: #333;
+  }

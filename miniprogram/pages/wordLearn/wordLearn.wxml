@@ -1,0 +1,56 @@
+<view class="container">
+  <view class="custom-nav" style="height: {{navBarHeight}}px;">
+    <view class="nav-content" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+      <view class="nav-left" bindtap="goBack">
+        <text class="nav-icon">〈</text>
+        <text class="nav-text"> {{completedInBatch}}/{{batchSize}}</text>
+      </view>
+      <view class="nav-right">
+        <text class="nav-icon">↺</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="main-content" style="padding-top: {{navBarHeight + 20}}px;">
+    
+    <view class="word-header">
+      <view class="spell-row">
+        <text class="spell">{{currentWord.headWord}}</text>
+        <view class="study-status">
+          <view class="dots-group">
+            <view class="dot {{currentWord.step >= 3 ? 'dot-green' : ''}}"></view>
+            <view class="dot {{currentWord.step >= 2 ? 'dot-green' : ''}}"></view>
+            <view class="dot {{currentWord.step >= 1 ? 'dot-green' : ''}}"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="phonetic-row">
+        <view class="accent-tag" bindtap="toggleAccent">
+          <text>{{ accentType === 2 ? '美' : '英' }}</text>
+          <text style="margin-left: 6rpx; font-size: 24rpx;">📣</text>
+        </view>
+        <text class="phonetic" bindtap="playAudio">[{{ accentType === 2 ? currentWord.content.word.content.usphone : currentWord.content.word.content.ukphone }}]</text>
+      </view>
+
+      <view class="instruction">先回想词义再选择，想不起来「看答案」</view>
+    </view>
+
+    <view class="options-list">
+      <block wx:for="{{options}}" wx:key="index">
+        <view class="option-item {{ isAnswered ? (item.isCorrect ? 'correct' : (index === selectedIndex ? 'wrong' : '')) : '' }}" 
+              bindtap="onOptionTap" 
+              data-correct="{{item.isCorrect}}"
+              data-index="{{index}}">
+          <text class="part-of-speech">{{item.pos}}.</text>
+          <text class="option-text">{{item.trans}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="footer-action" bindtap="onBottomBtnTap">
+    <text class="action-text">{{ isAnswered ? '继 续' : '看答案' }}</text>
+    <view class="action-line {{ isAnswered ? 'line-green' : 'line-red' }}"></view>
+  </view>
+</view>

@@ -1,0 +1,126 @@
+<!--pages/dashboard/dashboard.wxml-->
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="header">
+  <view class="custom-back-btn" bindtap="goBack">
+    <text class="back-arrow">〈</text>
+  </view>
+  <text class="title">仪表盘</text>
+</view>
+
+  <!-- 正在学习模块 -->
+<view class="section learning-section">
+  <view class="section-header">
+    <text class="section-title">正在学习</text>
+    <view class="change-book-btn" bindtap="goToBookSelect">换本词书</view>
+  </view>
+
+  <view class="main-learning-card">
+    <view class="book-row">
+      <view class="book-cover">
+        <image wx:if="{{bookCover}}" src="{{bookCover}}" mode="aspectFill" class="cover-image"></image>
+        
+        <view wx:else class="cover-fallback">
+          <view class="cover-badge">{{category}}</view>
+          <text class="cover-text">{{bookTitle}}</text>
+          <view class="cover-placeholder">
+            <view class="line1"></view>
+            <view class="line2"></view>
+            <view class="line3"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="paper-group">
+        <text class="paper-label">配套真题词组</text>
+        <view class="add-paper">
+          <text class="add-icon">+</text>
+        </view>
+      </view>
+
+      <view class="more-actions">
+        <view class="dot"></view>
+        <view class="dot"></view>
+        <view class="dot"></view>
+      </view>
+    </view>
+
+    <view class="progress-section">
+      <view class="progress-bar-wrapper">
+        <progress percent="{{(learnedCount/totalWords)*100}}" stroke-width="4" activeColor="#ff9800" backgroundColor="#eeeeee" border-radius="2"/>
+      </view>
+      <view class="progress-stats">
+        <text>已学习 {{learnedCount}}</text>
+        <text>总词数 {{totalWords}}</text>
+      </view>
+    </view>
+  </view>
+</view>
+ 
+
+  <!-- 我的数据模块 -->
+  <view class="section data-section">
+    <view class="section-header">
+      <text class="section-title">我的数据</text>
+    </view>
+    <view class="data-card">
+      <view class="data-header">
+        <text class="data-title">概览</text>
+        <view class="data-more" bindtap="onDataMore">
+          <text>›</text>
+        </view>
+      </view>
+      <view class="data-grid">
+        <view class="data-item">
+          <view class="item-header">
+            <text class="emoji-icon">📖</text>
+            <text class="data-label">今日学习&复习</text>
+          </view>
+          <text class="data-value">{{todayLearn}} <text class="unit">词</text></text>
+        </view>
+        
+        <view class="data-item">
+          <view class="item-header">
+            <text class="emoji-icon">📈</text>
+            <text class="data-label">累计学习</text>
+          </view>
+          <text class="data-value">{{learnedCount}} <text class="unit">词</text></text>
+        </view>
+        
+        <view class="data-item">
+          <view class="item-header">
+            <text class="emoji-icon">🌙</text>
+            <text class="data-label">今日总时长</text>
+          </view>
+          <text class="data-value">{{todayDuration}} <text class="unit">分钟</text></text>
+        </view>
+        
+        <view class="data-item">
+          <view class="item-header">
+            <text class="emoji-icon">🕒</text>
+            <text class="data-label">累计时长</text>
+          </view>
+          <text class="data-value">{{totalDuration}} <text class="unit">分钟</text></text>
+        </view>
+      </view>
+    </view>
+    <view class="calendar-card">
+      <view class="calendar-header">
+        <text class="calendar-title">日历</text>
+        <view class="calendar-more">
+            <text>连续签到{{studyCount}}天 ›</text>
+        </view>
+      </view>
+      <view class="calendar-week">
+        <view class="week-day" wx:for="{{weekDates}}" wx:key="label">
+          <text class="week-label">{{item.label}}</text>
+          
+          <view class="day-item {{item.isToday ? 'today' : ''}} {{item.isActive ? 'active' : ''}}">
+            {{item.isToday ? '今' : item.date}}
+          </view>
+        </view>
+      </view>
+    </view>
+    
+  </view>
+</view>
