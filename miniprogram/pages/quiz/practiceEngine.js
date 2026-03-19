@@ -43,6 +43,19 @@ Page({
     });
   },
 
+      // 返回上一页逻辑
+      goBack() {
+        wx.navigateBack({
+          delta: 1, // 返回上一级页面
+          fail: () => {
+            // 兜底方案：如果页面栈中没有上一页了，强制回到首页
+            wx.reLaunch({
+              url: '/pages/quiz/quiz'
+            });
+          }
+        });
+      },
+
   // ======== 核心功能：向云数据库请求题目 ========
   fetchQuestions(mode, module, subtype) {
     wx.showLoading({ title: '加载题目中...' });

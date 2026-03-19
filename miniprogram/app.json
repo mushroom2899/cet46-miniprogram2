@@ -2,15 +2,14 @@
   "pages": [
     "pages/index/index",
     "pages/login/login",
-   
     "pages/quiz/quiz",
     "pages/quiz/practiceEngine",
     "pages/userHome/userHome",
-    
     "pages/bookSelect/bookSelect",
     "pages/wordLearn/wordLearn",
     "pages/wordDetail/wordDetail",
-    "pages/dashboard/dashboard"
+    "pages/dashboard/dashboard",
+    "pages/wordReview/wordReview"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

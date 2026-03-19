@@ -1,0 +1,37 @@
+<!--pages/wordReview/wordReview.wxml-->
+<view class="container">
+  <view class="background-glass"></view>
+
+  <view class="header">
+    <view class="progress-text">0/10</view>
+    <view class="progress-dots">
+      <view class="dot active"></view>
+      <view wx:for="{{9}}" wx:key="index" class="dot"></view>
+    </view>
+  </view>
+
+  <view class="main-content">
+    <view class="input-wrapper" bindtap="focusInput">
+      <view class="cursor {{inputValue.length > 0 ? 'hidden' : ''}}"></view>
+      <input 
+        class="real-input" 
+        focus="{{isFocus}}" 
+        value="{{inputValue}}" 
+        bindinput="onInput"
+        maxlength="20"
+      />
+      <view class="display-text">{{inputValue}}</view>
+    </view>
+    
+    <view class="translation">
+      <view class="type">vi. vt. 考虑，斟酌</view>
+      <view class="type">vt. 认为；体谅；端详</view>
+    </view>
+  </view>
+
+  <view class="footer {{keyboardHeight > 0 ? 'hidden' : ''}}">
+    <view class="action-btn circle-btn"><text>×</text></view>
+    <view class="action-btn circle-btn light-btn"><text>💡</text></view>
+    <view class="action-btn circle-btn"><text>✓</text></view>
+  </view>
+</view>

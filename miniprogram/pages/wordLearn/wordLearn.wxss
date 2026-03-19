@@ -41,7 +41,7 @@ page {
   }
   .nav-text {
     margin-left: 20rpx;
-    font-size: 30rpx;
+    font-size: 32rpx;
   }
   
   /* 单词区域 */

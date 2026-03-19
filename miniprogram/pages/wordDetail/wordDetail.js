@@ -79,7 +79,7 @@ Page({
     /**
      * 返回上一页
      */
-    goBack() { wx.navigateBack({ delta: 1 }); },
+    goBack() { wx.navigateBack({ delta: 2 }); },
 
     /**
      * 点击“下一个”按钮

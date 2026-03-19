@@ -65,6 +65,7 @@
   .main-tabs {
     white-space: nowrap;
     padding: 20rpx 0;
+    height: 50rpx;
     border-bottom: 1rpx solid #eee;
   }
   .tab-item {
@@ -84,6 +85,7 @@
     flex: 1; 
     padding: 0 30rpx;
     background-color: #fff;
+    padding-bottom: 60rpx;
    }
   .book-item {
     display: flex;

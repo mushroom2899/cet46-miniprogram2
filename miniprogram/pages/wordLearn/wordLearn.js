@@ -157,36 +157,17 @@ Page({
    * 从内存队列中提取下一个单词
    */
   async loadNextWord() {
-    let { currentPhase, sessionWords, activeQueue, pendingQueue, batchSize, completedInBatch } = this.data;
+    let { sessionWords, activeQueue, pendingQueue } = this.data;
 
     // 如果当前活跃队列空了
     if (activeQueue.length === 0) {
-      // 如果等待队列也空了，说明这一轮（Phase）彻底学完了！
+      // 2. 核心判断：如果等待队列也空了，说明所有 5 个单词的 step 都已经达到 3！
       if (pendingQueue.length === 0) {
-        currentPhase++; // 进入下一轮
-        
-        // 如果 3 轮全部学完，处理数据库保存
-        if (currentPhase > 3) {
-          await this.finishBatch();
-          return;
-        } else {
-          // 初始化下一轮的队列
-        //   pendingQueue = sessionWords.map((_, i) => i);
-        //   activeQueue = pendingQueue.splice(0, Math.min(3, batchSize));
-          // 新一轮Phase初始化：从所有未完成3次的单词中随机选
-          // 筛选未完成3次学习的单词索引
-          const uncompletedIndexes = sessionWords
-            .map((w, i) => ({ idx: i, step: w.step }))
-            .filter(item => item.step < 3)
-            .map(item => item.idx);
-          // 随机打乱
-          const shuffled = uncompletedIndexes.sort(() => Math.random() - 0.5);
-          // 取前3个作为活跃队列，剩余作为pending
-          activeQueue = shuffled.splice(0, Math.min(3, shuffled.length));
-          pendingQueue = shuffled;
-        }
+        // 彻底学完本组，直接触发结算并保存到数据库！
+        await this.finishBatch(); 
+        return; // 阻断执行，不要再往下找单词了
       } else {
-        // 兜底补齐：随机取，而非按顺序
+        // 兜底补齐：等待队列里还有未达标（step < 3）的词，随机挑最多3个拿出来继续学
         activeQueue = pendingQueue.sort(() => Math.random() - 0.5).splice(0, Math.min(3, pendingQueue.length));
       }
     }
@@ -199,7 +180,6 @@ Page({
     this.setData({
       currentWord: target,
       currentIndex: nextIdx,
-      currentPhase,
       activeQueue,
       pendingQueue,
       isAnswered: false,
@@ -243,7 +223,7 @@ Page({
       // 1. 答对：学习深度 +1，并强制渲染绿点
       sessionWords[currentIndex].step++;
       updateData['currentWord.step'] = sessionWords[currentIndex].step;
-      pendingQueue.push(currentIndex); // 踢去休息区队尾
+
 
       // 2. 判断是否学满 3 次
       if (sessionWords[currentIndex].step >= 3) {
@@ -348,8 +328,7 @@ Page({
       // 真实进度更新：学习量加5，需要复习的单词加5
       await db.collection('user_progress').doc(progressId).update({
         data: {
-          learnedCount: _.inc(batchSize),
-          reviewCount: _.inc(batchSize)
+          learnedCount: _.inc(batchSize)
         }
       });
       wx.removeStorageSync('learningSession'); // 清除本组缓存
