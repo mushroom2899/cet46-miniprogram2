@@ -148,7 +148,7 @@
       bind:cancel="closeReviewCountModal" 
       bind:confirm="confirmReviewCountModal">
       <view class="radio-group">
-        <view class="radio-item" wx:for="{{[10, 15, 20, 30]}}" wx:key="*this" bindtap="selectTempReviewCount" data-val="{{item}}">
+        <view class="radio-item" wx:for="{{[5, 10, 15, 20]}}" wx:key="*this" bindtap="selectTempReviewCount" data-val="{{item}}">
           <text class="radio-text">{{item}}个</text>
           <icon type="success_no_circle" size="20" color="#FF6B00" wx:if="{{tempReviewCount === item}}"></icon>
         </view>

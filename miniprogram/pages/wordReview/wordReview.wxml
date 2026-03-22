@@ -2,17 +2,24 @@
 <view class="container">
   <view class="background-glass"></view>
 
-  <view class="header">
-    <view class="progress-text">0/10</view>
+  <!-- <view class="header">
+    <view class="progress-text">{{currentIndex}}/{{targetReviewCount}}</view>
     <view class="progress-dots">
-      <view class="dot active"></view>
-      <view wx:for="{{9}}" wx:key="index" class="dot"></view>
+      <view wx:for="{{targetReviewCount}}" wx:key="index" 
+          class="dot {{index < currentIndex ? 'active' : ''}} {{index === currentIndex && isCorrect ? 'correct-dot' : ''}}"></view>
+    </view>
+  </view> -->
+  <view class="header">
+    <view class="progress-text">{{isCorrect ? currentIndex + 1 : currentIndex}}/{{targetReviewCount}}</view>
+    
+    <view class="progress-dots">
+      <view wx:for="{{targetReviewCount}}" wx:key="index" 
+          class="dot {{index === currentIndex && !isCorrect ? 'active' : ''}} {{(index < currentIndex) || (index === currentIndex && isCorrect) ? 'correct-dot' : ''}}"></view>
     </view>
   </view>
 
   <view class="main-content">
     <view class="input-wrapper" bindtap="focusInput">
-      <view class="cursor {{inputValue.length > 0 ? 'hidden' : ''}}"></view>
       <input 
         class="real-input" 
         focus="{{isFocus}}" 
@@ -20,18 +27,42 @@
         bindinput="onInput"
         maxlength="20"
       />
-      <view class="display-text">{{inputValue}}</view>
+      <view class="display-text {{isCorrect ? 'text-success' : ''}}">{{inputValue}}</view>
+      <view class="cursor" wx:if="{{!isCorrect}}"></view>
+    </view>
+
+    <view class="correct-answer-box" wx:if="{{showAnswer}}">
+      <text class="correct-word">{{currentWord.headWord}}</text>
     </view>
     
     <view class="translation">
-      <view class="type">vi. vt. 考虑，斟酌</view>
-      <view class="type">vt. 认为；体谅；端详</view>
+      <block wx:if="{{currentWord.content.word.content.trans}}">
+        <view class="type" wx:for="{{currentWord.content.word.content.trans}}" wx:key="index">
+          {{item.pos}} {{item.tranCn}}
+        </view>
+      </block>
+      <block wx:else>
+        <view class="type">暂无释义</view>
+      </block>
+      <view class="phonetic-container" wx:if="{{showPhonetic}}">
+        <!-- <text class="phonetic-text">英 [{{currentWord.content.word.content.ukphone}}]</text> -->
+        <text class="phonetic-text">美 [{{currentWord.content.word.content.usphone}}]</text>
+      </view>
     </view>
   </view>
 
   <view class="footer {{keyboardHeight > 0 ? 'hidden' : ''}}">
-    <view class="action-btn circle-btn"><text>×</text></view>
-    <view class="action-btn circle-btn light-btn"><text>💡</text></view>
-    <view class="action-btn circle-btn"><text>✓</text></view>
+    <view class="action-btn circle-btn" bindtap="goBack"><text>✕</text></view>
+    <view class="action-btn circle-btn light-btn" bindtap="playHint"><text>💡</text></view>
+    <view class="action-btn circle-btn" bindtap="checkAnswer">
+      <text>{{isCorrect ? '⇨' : '✔'}}</text>
+    </view>
   </view>
+
+  <!-- <view class="footer {{keyboardHeight > 0 ? 'hidden' : ''}}">
+    <view class="action-btn circle-btn" bindtap="skipWord"><text>×</text></view>
+    <view class="action-btn circle-btn light-btn" bindtap="showHint"><text>💡</text></view>
+    <view class="action-btn circle-btn" bindtap="checkAnswer"><text>✓</text></view>
+  </view> -->
+
 </view>

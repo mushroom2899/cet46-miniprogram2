@@ -323,7 +323,7 @@ Page({
    */
   async finishBatch() {
     wx.showLoading({ title: '保存进度中...' });
-    const { progressId, batchSize } = this.data;
+    const { progressId, batchSize, sessionWords, category } = this.data;
     try {
       // 真实进度更新：学习量加5，需要复习的单词加5
       await db.collection('user_progress').doc(progressId).update({
@@ -331,6 +331,21 @@ Page({
           learnedCount: _.inc(batchSize)
         }
       });
+
+    // 2.将本组学完的 5 个单词，记录到“已学单词库”中
+    // 使用 Promise.all 并发写入数据库
+    const wordTasks = sessionWords.map(word => {
+      return db.collection('user_words').add({
+        data: {
+          category: category,         // 记录属于哪本词书 (如 'CET4')
+          headWord: word.headWord,    // 记录单词拼写
+          wordData: word,             // 把完整的单词对象全存进去，复习时直接拿来用，免得再去总库查释义！
+          learnDate: db.serverDate()  // 记录学习时间
+        }
+      });
+    });
+      await Promise.all(wordTasks); // 等待所有单词记录完毕
+      
       wx.removeStorageSync('learningSession'); // 清除本组缓存
       wx.hideLoading();
       wx.showToast({ title: '本组完成！', icon: 'success' });
