@@ -181,46 +181,53 @@ Page({
    */
   onSelectBook(e) {
     const selectedBook = e.currentTarget.dataset.book;
-    
-    // 弹出加载提示，防止用户重复点击
-    wx.showLoading({ title: '正在导入词书...', mask: true });
-
-    //  'user_progress' 集合来保存用户的学习状态
-    db.collection('user_progress').add({
-      data: {
-        bookId: selectedBook._id,       // 关联的词书 ID
-        bookTitle: selectedBook.title,  // 词书名称
-        category: selectedBook.category, // 关键：存入分类（CET4/CET6）
-        totalWords: selectedBook.count, // 总词汇量
-        learnedCount: 0,                // 初始已学单词数为 0
-        reviewCount: 0,                 // 初始需复习数为 0
-        selectTime: db.serverDate()     // 记录选择的时间
-      }
-    }).then(res => {
-      wx.hideLoading();
-      wx.showToast({ 
-        title: '选择成功！', 
-        icon: 'success',
-        duration: 1500
-      });
-
-      // 延迟 1.5 秒后跳转回首页，让用户看清 Toast 提示
-      setTimeout(() => {
-        // 如果你的首页是底部 TabBar 页面，必须用 switchTab
-        // 如果不是 TabBar 页面，可以使用 wx.redirectTo({ url: '/pages/index/index' })
-        wx.reLaunch({
-          url: '/pages/index/index'
+    const db = wx.cloud.database();
+  
+    wx.showLoading({ title: '正在处理...', mask: true });
+  
+    // 1. 首先查询该用户是否已经选过这本书
+    db.collection('user_progress').where({
+      bookId: selectedBook._id
+      // 云开发会自动过滤当前用户的 openid，所以这里只需要匹配 bookId
+    }).get().then(res => {
+      if (res.data.length > 0) {
+        // 2. 情况 A：已经存在记录，我们只更新选择时间，不重置进度
+        const recordId = res.data[0]._id;
+        return db.collection('user_progress').doc(recordId).update({
+          data: { selectTime: db.serverDate() }
+        }).then(() => {
+          this.finishSelection("欢迎回来继续学习！");
         });
-      }, 1500);
-
+      } else {
+        // 3. 情况 B：不存在记录，执行原有的初始化逻辑
+        return db.collection('user_progress').add({
+          data: {
+            bookId: selectedBook._id,
+            bookTitle: selectedBook.title,
+            category: selectedBook.category,
+            totalWords: selectedBook.count,
+            learnedCount: 0,
+            reviewCount: 0,
+            selectTime: db.serverDate()
+          }
+        }).then(() => {
+          this.finishSelection("词书选择成功！");
+        });
+      }
     }).catch(err => {
       wx.hideLoading();
-      console.error('保存用户进度失败：', err);
-      wx.showToast({ 
-        title: '选择失败，请重试', 
-        icon: 'none' 
-      });
+      console.error("数据库操作失败", err);
     });
+  },
+  
+  // 提取出的通用跳转逻辑
+  finishSelection(msg) {
+    wx.hideLoading();
+    wx.showToast({ title: msg, icon: 'success' });
+    setTimeout(() => {
+      wx.reLaunch({ url: '/pages/dashboard/dashboard' });
+    }, 1500);
+
   }
 
 });

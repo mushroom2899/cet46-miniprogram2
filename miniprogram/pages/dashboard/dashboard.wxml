@@ -108,7 +108,7 @@
       <view class="calendar-header">
         <text class="calendar-title">日历</text>
         <view class="calendar-more">
-            <text>连续签到{{studyCount}}天 ›</text>
+            <text>共签到{{studyCount}}天 ›</text>
         </view>
       </view>
       <view class="calendar-week">
