@@ -28,10 +28,10 @@ Page({
     });
 
     // === 【动态获取词书类型】 ===
-    // 逻辑：优先尝试从上个页面传递的 options 取 -> 其次从本地缓存取 -> 最后兜底用 'CET4'
+    // 逻辑：优先尝试从上个页面传递的 options 取 -> 其次从本地缓存取 
     const currentCategory = options.category || wx.getStorageSync('currentCategory') || 'CET4';
     
-    // 2. 读取个人中心设置的复习量 (如果没设置过，兜底默认 10 个)
+    // 2. 读取个人中心设置的复习量
     const savedReviewCount = wx.getStorageSync('reviewCount') || 5;
 
     const savedAccentType = wx.getStorageSync('accentType') || 2;
@@ -40,6 +40,7 @@ Page({
     this.setData({ 
       category: currentCategory,
       targetReviewCount: savedReviewCount ,
+      realDocId: options.realDocId,
       accentType: savedAccentType
     });
 
@@ -47,32 +48,46 @@ Page({
     this.audioCtx = wx.createInnerAudioContext();
     this.audioCtx.onError((res) => console.error('播放失败:', res.errMsg));
     // 3. 页面加载时拉取复习数据
-    this.fetchReviewWords(savedReviewCount);
+    this.fetchReviewWords(savedReviewCount, currentCategory);
   },
 
   // 页面卸载时销毁音频组件，防止内存泄漏
-  onUnload() {
-    if (this.audioCtx) {
+onUnload() {
+  // 安全销毁音频实例
+  // 只有当 this.audioCtx 存在时，才执行 destroy()
+  if (this.audioCtx) {
+    try {
       this.audioCtx.destroy();
+      console.log('音频实例已安全销毁');
+    } catch (e) {
+      console.error('音频销毁异常:', e);
     }
-  },
+  }
+},
 
   // === 从云数据库拉取真实单词 ===
-  async fetchReviewWords(limitCount) {
+  async fetchReviewWords(limitCount, category) {
     wx.showLoading({ title: '加载已学词库...' });
+
+    const targetCategory = category || this.data.category;
+  console.log('正在拉取的词书类型:', targetCategory);
+   
     try {
-      // 【重点修改】去 user_words（已学词库）里抽词，而不是去总库抽
       const res = await db.collection('user_words')
         .aggregate()
         .match({ 
-          category: this.data.category // 只抽出当前所选词书的已学单词
+          category: targetCategory // 只抽出当前所选词书的已学单词
         }) 
         .sample({ size: limitCount })  // 随机抽取用户设定数量的单词
         .end();
-  
+
       // 因为我们在学习时把单词的完整数据包存在了 wordData 字段里，这里要把它们“剥”出来
-      const words = res.list.map(item => item.wordData);
-  
+const words = res.list.map(item => {
+  return {
+    ...item.wordData,
+    _dbId: item._id // 将数据库的唯一ID保存下来
+  };
+});
       if (words && words.length > 0) {
         this.setData({
           reviewWords: words,
@@ -194,6 +209,7 @@ Page({
   // === 手动点击✓号验证 ===
   checkAnswer() {
     if (this.data.isCorrect) {
+      this.updateReviewCount();
       this.nextWord();
     } else {
       
@@ -216,5 +232,27 @@ Page({
         this.nextWord();
       }, 2000);
     }
+  },
+
+  // 在 checkAnswer 后面或 Page 内部新增
+async updateReviewCount() {
+  const currentWord = this.data.currentWord;
+  if (!currentWord || !currentWord._dbId) return;
+
+  try {
+    console.log("记录id", currentWord._dbId);
+    await db.collection('user_words').doc(currentWord._dbId).update({
+      data: {
+        // 使用 _.inc 自增，如果字段不存在会自动创建并设为 1
+        reviewCount: db.command.inc(1),
+        lastReviewDate: db.serverDate() // 顺便记录最后复习时间
+      }
+    });
+    console.log('复习次数更新成功');
+  } catch (err) {
+    console.error('更新复习次数失败:', err);
   }
+}
+
+
 });

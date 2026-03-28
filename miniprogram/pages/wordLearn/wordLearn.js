@@ -118,6 +118,8 @@ Page({
       // 给每个单词增加一个 step 属性，记录它完成了几次学习（0到3）
       const sessionWords = wordRes.data.map(w => {
         w.step = 0;
+        w.testCount = 0;    
+        w.correctCount = 0;
         return w;
       });
       const actualBatchSize = sessionWords.length;
@@ -219,9 +221,12 @@ Page({
 
     let updateData = {}; 
 
+    // 实时更新内存中的统计数据
+    sessionWords[currentIndex].testCount++; // 只要点击，测试次数就加1
     if (isCorrect) {
       // 1. 答对：学习深度 +1，并强制渲染绿点
       sessionWords[currentIndex].step++;
+      sessionWords[currentIndex].correctCount++; // 答对，正确次数加1
       updateData['currentWord.step'] = sessionWords[currentIndex].step;
 
 
@@ -324,6 +329,7 @@ Page({
   async finishBatch() {
     wx.showLoading({ title: '保存进度中...' });
     const { progressId, batchSize, sessionWords, category } = this.data;
+    
     try {
       // 真实进度更新：学习量加5，需要复习的单词加5
       await db.collection('user_progress').doc(progressId).update({
@@ -340,7 +346,9 @@ Page({
           category: category,         // 记录属于哪本词书 (如 'CET4')
           headWord: word.headWord,    // 记录单词拼写
           wordData: word,             // 把完整的单词对象全存进去，复习时直接拿来用，免得再去总库查释义！
-          learnDate: db.serverDate()  // 记录学习时间
+          testCount: word.testCount,       
+          correctCount: word.correctCount,
+          lastlearnDate: db.serverDate()  // 记录学习时间
         }
       });
     });

@@ -236,12 +236,26 @@ Page({
         });
       },
   
-    // Review 按钮点击事件
-    onReviewTap() {
-      wx.navigateTo({
-        url: '/pages/wordReview/wordReview'
-      });
-    },
+// pages/index/index.js
+
+// Review 按钮点击事件
+onReviewTap() {
+  const p = this.data.currentProgress;
+  
+  // 安全检查：如果还没加载出进度数据，不执行跳转或给出提示
+  if (!p || !p.category) {
+    wx.showToast({
+      title: '请先选择词书',
+      icon: 'none'
+    });
+    return;
+  }
+
+  wx.navigateTo({
+    // 从 currentProgress 对象里取 category
+    url: `/pages/wordReview/wordReview?category=${p.category}`
+  });
+},
   
 // 底部 TabBar 切换
 switchTab(e) {
