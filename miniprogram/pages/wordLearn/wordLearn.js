@@ -109,10 +109,10 @@ Page({
         return;
       }
 
-      // 2. 性能优化：一次性获取 20 个随机词作为干扰项池，避免每次点击选项都去查数据库造成卡顿
+      // 2. 性能优化：一次性获取 50 个随机词作为干扰项池，避免每次点击选项都去查数据库造成卡顿
       const distractorsRes = await db.collection(this.data.category)
-        .skip(Math.floor(Math.random() * (totalWords - 20)))
-        .limit(20)
+        .skip(Math.floor(Math.random() * (totalWords - 50)))
+        .limit(50)
         .get();
 
       // 给每个单词增加一个 step 属性，记录它完成了几次学习（0到3）
@@ -334,7 +334,8 @@ Page({
       // 真实进度更新：学习量加5，需要复习的单词加5
       await db.collection('user_progress').doc(progressId).update({
         data: {
-          learnedCount: _.inc(batchSize)
+          learnedCount: _.inc(batchSize),
+          reviewNumber: _.inc(batchSize)
         }
       });
 

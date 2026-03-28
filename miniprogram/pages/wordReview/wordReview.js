@@ -1,5 +1,6 @@
 // pages/wordReview/wordReview.js
 const db = wx.cloud.database(); // 引入云数据库
+const _ = db.command;
 
 Page({
   data: {
@@ -8,8 +9,9 @@ Page({
     keyboardHeight: 0,
     
     // 核心业务数据
+    progressId: '',
     category: 'CET4', // 当前复习的词书类型，默认兜底为 CET4
-    targetReviewCount: 10, // 默认复习量，会从个人中心读取
+    targetReviewCount: 5, // 默认复习量，会从个人中心读取
     reviewWords: [],  // 需要复习的单词列表
     currentIndex: 0,  // 当前复习到第几个
     currentWord: null,// 当前正在复习的单词对象
@@ -40,7 +42,7 @@ Page({
     this.setData({ 
       category: currentCategory,
       targetReviewCount: savedReviewCount ,
-      realDocId: options.realDocId,
+      progressId: options.progressId,
       accentType: savedAccentType
     });
 
@@ -212,7 +214,6 @@ const words = res.list.map(item => {
       this.updateReviewCount();
       this.nextWord();
     } else {
-      
       const targetWord = this.data.currentWord.headWord;
       const type = this.data.accentType; 
   
@@ -237,22 +238,42 @@ const words = res.list.map(item => {
   // 在 checkAnswer 后面或 Page 内部新增
 async updateReviewCount() {
   const currentWord = this.data.currentWord;
+  const progressId = this.data.progressId; // 获取 onLoad 中存入的进度记录 ID
+  console.log('进度记录id',this.data.progressId);
   if (!currentWord || !currentWord._dbId) return;
 
   try {
-    console.log("记录id", currentWord._dbId);
-    await db.collection('user_words').doc(currentWord._dbId).update({
-      data: {
-        // 使用 _.inc 自增，如果字段不存在会自动创建并设为 1
-        reviewCount: db.command.inc(1),
-        lastReviewDate: db.serverDate() // 顺便记录最后复习时间
-      }
-    });
-    console.log('复习次数更新成功');
+    // --- 并发执行两个更新任务 ---
+    const tasks = [];
+
+    // 任务 A: 更新该单词在 user_words 里的个人复习数据
+    tasks.push(
+      db.collection('user_words').doc(currentWord._dbId).update({
+        data: {
+          reviewedCount: _.inc(1),
+          lastReviewDate: db.serverDate()
+        }
+      })
+    );
+
+    // 任务 B: 更新 user_progress 里的总复习计数（核心需求）
+    if (progressId) {
+      tasks.push(
+        db.collection('user_progress').doc(progressId).update({
+          data: {
+            reviewedCount: _.inc(1), // 已经完成复习字段自增 1
+            reviewNumber: _.inc(-1) // 需要复习字段自减 1
+          }
+        })
+      );
+    }
+
+    await Promise.all(tasks);
+    console.log('单词复习数据与总进度同步更新成功');
+    
   } catch (err) {
-    console.error('更新复习次数失败:', err);
+    console.error('更新复习进度失败:', err);
   }
 }
-
 
 });

@@ -207,7 +207,8 @@ Page({
             category: selectedBook.category,
             totalWords: selectedBook.count,
             learnedCount: 0,
-            reviewCount: 0,
+            reviewNumber: 0,
+            reviewedCount: 0,
             selectTime: db.serverDate()
           }
         }).then(() => {
@@ -225,7 +226,7 @@ Page({
     wx.hideLoading();
     wx.showToast({ title: msg, icon: 'success' });
     setTimeout(() => {
-      wx.reLaunch({ url: '/pages/dashboard/dashboard' });
+      wx.reLaunch({ url: '/pages/index/index' });
     }, 1500);
 
   }

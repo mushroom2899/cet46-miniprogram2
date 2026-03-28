@@ -202,7 +202,7 @@ Page({
             learnNumber: progress.totalWords - progress.learnedCount, 
             
             // Review 显示需要复习的数量
-            reviewNumber: progress.learnedCount,
+            reviewNumber: progress.reviewNumber,
             
             // 将当前词书名存下来备用（如果你想在页面上显示的话）
             currentBook: progress.bookTitle,
@@ -253,7 +253,7 @@ onReviewTap() {
 
   wx.navigateTo({
     // 从 currentProgress 对象里取 category
-    url: `/pages/wordReview/wordReview?category=${p.category}`
+    url: `/pages/wordReview/wordReview?progressId=${p._id}&category=${p.category}`
   });
 },
   
