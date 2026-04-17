@@ -1,0 +1,241 @@
+/* pages/quiz/quizResult.wxss */
+.container {
+  min-height: 100vh;
+  background: #FDF0E9;
+}
+
+  /* --- 沉浸式导航栏 --- */
+  .custom-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    /* 导航栏背景透明化，随页面滚动显得更沉浸 */
+    background: rgba(247, 248, 250, 0.95); 
+    backdrop-filter: blur(10px);
+  }
+  .nav-content {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .nav-left {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 30rpx;
+  }
+  .nav-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 34rpx; 
+    color: #333;
+    font-weight: bold; 
+  }
+  .back-icon {
+    font-size: 70rpx;
+    color: #333;
+    font-weight: 300;
+    transform: translateY(-4rpx); 
+  }
+
+.content-scroll {
+  padding-top: 100px;
+  height: calc(100vh - 80px);
+}
+
+.card {
+  background: #FFFFFF;
+  margin: 40rpx;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.03);
+}
+
+/* Gauge Chart Implementation */
+.gauge-container {
+  width: 400rpx;
+  height: 240rpx;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.gauge-bg {
+  width: 400rpx;
+  height: 400rpx;
+  border-radius: 50%;
+  border: 40rpx solid #F5F5F5;
+  box-sizing: border-box;
+}
+
+.gauge-active {
+  width: 400rpx;
+  height: 400rpx;
+  border-radius: 50%;
+  border: 40rpx solid transparent;
+  border-top-color: #FF823A;
+  border-left-color: #FF823A;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  transform: rotate(-45deg);
+}
+
+.gauge-mask {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.score-value {
+  font-size: 100rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 60rpx;
+  padding: 0 20rpx;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+}
+
+/* pages/quiz/quizResult.wxss */
+
+.header-left {
+  display: flex;          /* 开启 Flex 布局，使子元素水平排列 */
+  align-items: center;    /* 确保图标和文字在垂直方向上居中对齐 */
+}
+
+.header-title {
+  margin-left: 18rpx;     /* 在图标和文字之间添加一点间距，避免紧贴 */
+  font-size: 32rpx;       /* 根据需要调整文字大小 */
+  font-weight: bold;      /* 根据图片效果，标题通常加粗 */
+  color: #333;
+}
+
+/* 整个容器设为横向伸缩布局 */
+.info-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #F8F9FC; /* 图片中内部区域有浅灰色背景 */
+  padding: 30rpx 0;
+  border-radius: 12rpx;
+  margin-top: 20rpx;
+}
+
+/* 每个单元格设为纵向排列，文字居中 */
+.info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  font-size: 30rpx;
+  color: #999999;
+  margin-bottom: 15rpx;
+}
+
+.val {
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+/* 垂直分割线 */
+.info-divider {
+  width: 2rpx;
+  height: 40rpx;
+  background-color: #EEEEEE;
+}
+
+/* 颜色类名 */
+.blue-text { color: #5B8FF9; }
+.green-text { color: #28C76F; }
+.red-text { color: #EA5455; }
+
+.footer-tip {
+  text-align: center;
+  font-size: 24rpx;
+  color: #CCC;
+  margin-top: 40rpx;
+}
+
+/* Answer Sheet Grid */
+.answer-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 30rpx;
+  margin-top: 30rpx;
+}
+
+.answer-item {
+  width: 80rpx;
+  height: 80rpx;
+  background: #E2E8F0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+  font-weight: bold;
+}
+
+.answer-item.correct { background: #28C76F; }
+.answer-item.wrong { background: #EA5455; }
+
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 160rpx;
+  background: #FFF;
+  display: flex;
+  align-items: center;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+}
+
+.btn-all {
+  flex: 0.7;
+  height: 100rpx;
+  line-height: 100rpx; /* 设置与高度一致  */
+  background: #FF823A;
+  color: #FFF;
+  border-radius: 50rpx;
+  font-size: 38rpx;
+  text-align: center;   /* 水平居中  */
+  padding: 0;
+}

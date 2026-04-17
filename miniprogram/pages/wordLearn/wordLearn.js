@@ -2,6 +2,14 @@
 const db = wx.cloud.database();
 const _ = db.command;
 
+// 掌握度计算工具函数
+const calculateMastery = (testCount, correctCount, reviewedCount = 0) => {
+  if (!testCount || testCount === 0) return 0;
+  const accuracy = correctCount / testCount;
+  const reviewScore = Math.min(reviewedCount, 5) / 5;
+  return Math.round((accuracy * 0.6 + reviewScore * 0.4) * 100);
+};
+
 Page({
   data: {
     // 基础 UI 数据
@@ -12,7 +20,6 @@ Page({
     // 核心算法与队列状态 
     batchSize: 5,        // 每次学习的单词总数（默认 5个）
     completedInBatch: 0, // 本组已经完成 3 次学习的单词数
-    currentPhase: 1,     // 当前处于第几轮循环（1, 2, 3）
     sessionWords: [],    // 本组 5 个单词的完整数据池
     activeQueue: [],     // 当前屏幕上正在轮换的单词索引（最多3个）
     pendingQueue: [],    // 还没进入当前轮换队列的单词索引
@@ -96,18 +103,56 @@ Page({
       const learnedCount = progressRes.data.learnedCount || 0;
       const totalWords = progressRes.data.totalWords;
 
-      // 1. 获取本组的 5 个单词
-      const wordRes = await db.collection(this.data.category)
-        .orderBy('wordRank', 'asc')
-        .skip(learnedCount)
-        .limit(this.data.batchSize)
-        .get();
+      const batchSize = this.data.batchSize;
+      const oldGoal = Math.floor(batchSize * 0.4); // 旧词配额
 
-      if (wordRes.data.length === 0) {
-        wx.hideLoading();
-        wx.showModal({ title: '恭喜', content: '您已学完本书所有单词！', showCancel: false, success:()=> wx.navigateBack() });
-        return;
-      }
+            // 1. 拉取低掌握度旧词（mastery < 60）
+            const oldWordsRes = await db.collection('user_words')
+            .where({ category: this.data.category, mastery: _.lt(60) })
+            .limit(oldGoal)
+            .get();
+          
+          let oldWords = oldWordsRes.data.map(item => ({
+            ...item.wordData,
+            _fromOld: true,
+            _dbId: item._id,
+            testCount: item.testCount || 0,
+            correctCount: item.correctCount || 0,
+            reviewedCount: item.reviewedCount || 0
+          }));
+    
+          // 2. 拉取全新单词
+          const actualNewGoal = batchSize - oldWords.length; 
+          
+          const newWordsRes = await db.collection(this.data.category)
+            .orderBy('wordRank', 'asc')
+            .skip(learnedCount)
+            .limit(actualNewGoal)
+            .get();
+    
+          let newWords = newWordsRes.data.map(w => ({
+            ...w,
+            step: 0, testCount: 0, correctCount: 0, reviewedCount: 0
+          }));
+    
+          // 3. 合并并打乱
+          let sessionWords = [...oldWords, ...newWords].map(w => {
+            w.step = 0; 
+            return w;
+          }).sort(() => Math.random() - 0.5);
+
+      // 1. 获取本组的 5 个单词
+      // const wordRes = await db.collection(this.data.category)
+      //   .orderBy('wordRank', 'asc')
+      //   .skip(learnedCount)
+      //   .limit(this.data.batchSize)
+      //   .get();
+
+      // if (wordRes.data.length === 0) {
+      //   wx.hideLoading();
+      //   wx.showModal({ title: '恭喜', content: '您已学完本书所有单词！', showCancel: false, success:()=> wx.navigateBack() });
+      //   return;
+      // }
 
       // 2. 性能优化：一次性获取 50 个随机词作为干扰项池，避免每次点击选项都去查数据库造成卡顿
       const distractorsRes = await db.collection(this.data.category)
@@ -116,13 +161,12 @@ Page({
         .get();
 
       // 给每个单词增加一个 step 属性，记录它完成了几次学习（0到3）
-      const sessionWords = wordRes.data.map(w => {
-        w.step = 0;
-        w.testCount = 0;    
-        w.correctCount = 0;
-        return w;
-      });
-      const actualBatchSize = sessionWords.length;
+      // const sessionWords = wordRes.data.map(w => {
+      //   w.step = 0;
+      //   w.testCount = 0;    
+      //   w.correctCount = 0;
+      //   return w;
+      // });
 
       // 初始化第一轮队列：随机选3个进入活跃队列，剩余放入pending
       // 生成所有单词索引数组
@@ -130,18 +174,17 @@ Page({
       // 随机打乱
       allIndexes = allIndexes.sort(() => Math.random() - 0.5);
       // 取前3个作为活跃队列
-      let activeQueue = allIndexes.splice(0, Math.min(3, actualBatchSize));
+      let activeQueue = allIndexes.splice(0, Math.min(3, sessionWords.length));
       // 剩余作为pending队列
       let pendingQueue = allIndexes;
 
       this.setData({
         sessionWords,
-        batchSize: actualBatchSize,
-        completedInBatch: 0,
-        currentPhase: 1,
         activeQueue,
         pendingQueue,
-        batchDistractors: distractorsRes.data
+        completedInBatch: 0,
+        batchDistractors: distractorsRes.data,
+        isLoading: false
       });
 
       // 存入缓存
@@ -196,18 +239,28 @@ Page({
     this.playAudio();
   },
 
+  // generateOptions(target, distractors) {
+  //   const correctTrans = target.content.word.content.trans[0];
+  //   const correct = { pos: correctTrans.pos, trans: correctTrans.tranCn, isCorrect: true };
+
+  //   const wrongs = distractors.map(d => {
+  //     const t = d.content.word.content.trans[0];
+  //     return { pos: t.pos, trans: t.tranCn, isCorrect: false };
+  //   });
+
+  //   const allOptions = [correct].concat(wrongs).sort(() => Math.random() - 0.5);
+  //   this.setData({ options: allOptions });
+  // },
   generateOptions(target, distractors) {
     const correctTrans = target.content.word.content.trans[0];
     const correct = { pos: correctTrans.pos, trans: correctTrans.tranCn, isCorrect: true };
-
     const wrongs = distractors.map(d => {
       const t = d.content.word.content.trans[0];
       return { pos: t.pos, trans: t.tranCn, isCorrect: false };
     });
-
-    const allOptions = [correct].concat(wrongs).sort(() => Math.random() - 0.5);
-    this.setData({ options: allOptions });
+    this.setData({ options: [correct, ...wrongs].sort(() => Math.random() - 0.5) });
   },
+
 
   /**
    * 处理答题对错与队列进出逻辑
@@ -326,47 +379,80 @@ Page({
   /**
    * 本组彻底学完，结算写入数据库
    */
-  async finishBatch() {
-    wx.showLoading({ title: '保存进度中...' });
-    const { progressId, batchSize, sessionWords, category } = this.data;
+  // async finishBatch() {
+  //   wx.showLoading({ title: '保存进度中...' });
+  //   const { progressId, batchSize, sessionWords, category } = this.data;
     
+  //   try {
+  //     // 真实进度更新：学习量加5，需要复习的单词加5
+  //     await db.collection('user_progress').doc(progressId).update({
+  //       data: {
+  //         learnedCount: _.inc(batchSize),
+  //         reviewNumber: _.inc(batchSize)
+  //       }
+  //     });
+
+  //   // 2.将本组学完的 5 个单词，记录到“已学单词库”中
+  //   // 使用 Promise.all 并发写入数据库
+  //   const wordTasks = sessionWords.map(word => {
+  //     return db.collection('user_words').add({
+  //       data: {
+  //         category: category,         // 记录属于哪本词书 (如 'CET4')
+  //         headWord: word.headWord,    // 记录单词拼写
+  //         wordData: word,             // 把完整的单词对象全存进去，复习时直接拿来用，免得再去总库查释义！
+  //         testCount: word.testCount,       
+  //         correctCount: word.correctCount,
+  //         lastlearnDate: db.serverDate()  // 记录学习时间
+  //       }
+  //     });
+  //   });
+  //     await Promise.all(wordTasks); // 等待所有单词记录完毕
+      
+  //     wx.removeStorageSync('learningSession'); // 清除本组缓存
+  //     wx.hideLoading();
+  //     wx.showToast({ title: '本组完成！', icon: 'success' });
+      
+  //     // 无缝拉取下一组 5 个词
+  //     setTimeout(() => {
+  //       this.initNewBatch();
+  //     }, 1500);
+  //   } catch (err) {
+  //     wx.hideLoading();
+  //     console.error("保存失败", err);
+  //     wx.showToast({ title: '网络异常进度未保存', icon: 'none' });
+  //   }
+  // },
+  async finishBatch() {
+    wx.showLoading({ title: '保存进度...' });
+    const { progressId, sessionWords, category } = this.data;
+    // 计算本次新增的学习量（仅非旧词）
+    const newWordsCount = sessionWords.filter(w => !w._fromOld).length;
+
     try {
-      // 真实进度更新：学习量加5，需要复习的单词加5
       await db.collection('user_progress').doc(progressId).update({
-        data: {
-          learnedCount: _.inc(batchSize),
-          reviewNumber: _.inc(batchSize)
-        }
+        data: { learnedCount: _.inc(newWordsCount), reviewNumber: _.inc(newWordsCount) }
       });
 
-    // 2.将本组学完的 5 个单词，记录到“已学单词库”中
-    // 使用 Promise.all 并发写入数据库
-    const wordTasks = sessionWords.map(word => {
-      return db.collection('user_words').add({
-        data: {
-          category: category,         // 记录属于哪本词书 (如 'CET4')
-          headWord: word.headWord,    // 记录单词拼写
-          wordData: word,             // 把完整的单词对象全存进去，复习时直接拿来用，免得再去总库查释义！
-          testCount: word.testCount,       
-          correctCount: word.correctCount,
-          lastlearnDate: db.serverDate()  // 记录学习时间
+      const wordTasks = sessionWords.map(word => {
+        const mastery = calculateMastery(word.testCount, word.correctCount, word.reviewedCount || 0);
+        if (word._fromOld) {
+          return db.collection('user_words').doc(word._dbId).update({
+            data: { testCount: word.testCount, correctCount: word.correctCount, mastery: mastery, wordData: word, lastlearnDate: db.serverDate() }
+          });
+        } else {
+          return db.collection('user_words').add({
+            data: { category, headWord: word.headWord, wordData: word, testCount: word.testCount, correctCount: word.correctCount, reviewedCount: 0, mastery, lastlearnDate: db.serverDate() }
+          });
         }
       });
-    });
-      await Promise.all(wordTasks); // 等待所有单词记录完毕
-      
-      wx.removeStorageSync('learningSession'); // 清除本组缓存
+      await Promise.all(wordTasks);
+      wx.removeStorageSync('learningSession');
       wx.hideLoading();
-      wx.showToast({ title: '本组完成！', icon: 'success' });
-      
-      // 无缝拉取下一组 5 个词
-      setTimeout(() => {
-        this.initNewBatch();
-      }, 1500);
+      wx.showToast({ title: '本组完成！' });
+      setTimeout(() => this.initNewBatch(), 1500);
     } catch (err) {
+      console.error(err);
       wx.hideLoading();
-      console.error("保存失败", err);
-      wx.showToast({ title: '网络异常进度未保存', icon: 'none' });
     }
   },
 

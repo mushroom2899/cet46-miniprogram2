@@ -1,15 +1,10 @@
 <view class="container">
-  <!-- <view class="header" wx:if="{{questions.length > 0}}">
-    <text class="progress">{{currentIndex + 1}} / {{questions.length}}</text>
-  </view> -->
+
   <view class="custom-nav" style="height: {{navBarHeight}}px;">
     <view class="nav-content" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
       <view class="nav-left" bindtap="goBack">
         <text class="nav-icon">〈</text>
         <text class="progress">{{currentIndex + 1}} / {{questions.length}}</text>
-      </view>
-      <view class="nav-right">
-        <text class="nav-icon">↺</text>
       </view>
     </view>
   </view>
@@ -77,17 +72,37 @@
             <view class="q-content">{{item.content}}</view>
             <view class="q-source">{{item.source_text || item.source}}</view>
 
-            <view class="options-box">
+            <!-- <view class="options-box">
               <view class="option-item {{userAnswers[item._id] === opt.label ? 'selected' : ''}}" 
                     wx:for="{{item.options}}" wx:for-item="opt" wx:key="label"
                     bindtap="handleOptionTap" data-id="{{item._id}}" data-label="{{opt.label}}">
                 <view class="option-label">{{opt.label}}</view>
                 <view class="option-text">{{opt.text}}</view>
               </view>
-            </view>
+            </view> -->
+            <view class="options-box">
+  <view 
+    wx:for="{{item.options}}" wx:for-item="opt" wx:key="label"
+    bindtap="handleOptionTap" 
+    data-id="{{item._id}}" 
+    data-label="{{opt.label}}"
+    class="option-item {{userAnswers[item._id] === opt.label ? 'selected' : ''}} {{isReview ? (opt.label === item.answer ? 'correct' : (userAnswers[item._id] === opt.label ? 'wrong' : '')) : ''}}"
+  >
+    <view class="option-label">{{opt.label}}</view>
+    <view class="option-text">{{opt.text}}</view>
+    
+    <view wx:if="{{isReview}}" class="review-icon">
+      <icon wx:if="{{opt.label === item.answer}}" type="success_no_circle" size="16"/>
+    </view>
+  </view>
+</view>
           </scroll-view>
 
         </view> </view> </swiper-item>
   </swiper>
+
+  <view class="footer-action" wx:if="{{showSubmitBtn}}">
+  <button class="btn-submit" bindtap="submitQuiz">提交练习并查看报告</button>
+ </view>
 
 </view>

@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/quiz/quizResult",
     "pages/login/login",
     "pages/quiz/quiz",
     "pages/quiz/practiceEngine",

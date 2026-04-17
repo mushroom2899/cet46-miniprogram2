@@ -1,0 +1,91 @@
+<!--pages/quiz/quizResult.wxml-->
+<view class="container">
+  <view class="custom-nav" style="height: {{navBarHeight}}px;">
+    <view class="nav-content" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+      <view class="nav-left" bindtap="goBack">
+        <text class="back-icon">‹</text>
+      </view>
+      <view class="nav-title">练习报告</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="content-scroll">
+    <view class="card score-card">
+      <view class="gauge-container">
+        <view class="gauge-bg"></view>
+        <view class="gauge-active" style="transform: rotate({{scoreRotate}}deg)"></view>
+        <view class="gauge-mask">
+          <view class="score-value">{{score}}</view>
+          <view class="score-label">我的分数</view>
+        </view>
+      </view>
+      
+      <view class="stats-row">
+        <view class="stat-item">
+          <text class="stat-num">{{accuracy}}%</text>
+          <text class="stat-label">正确率</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{duration}}</text>
+          <text class="stat-label">用时</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{totalCount}}</text>
+          <text class="stat-label">做题数</text>
+        </view>
+      </view>
+      
+    </view>
+
+    <view class="card answer-card">
+      <view class="card-header">
+        <view class="header-left">
+          <icon type="success" size="24" color="#FF823A"></icon>
+          <text class="header-title">答题卡</text>
+        </view>
+      </view>
+      
+      <view class="answer-grid">
+        <view wx:for="{{results}}" wx:key="index" 
+              class="answer-item {{item.status == 1 ? 'correct' : (item.status == 2 ? 'wrong' : '')}}">
+          {{index + 1}}
+        </view>
+      </view>
+    </view>
+
+    <view class="card info-card">
+  <view class="card-header">
+    <view class="header-left">
+      <icon type="info" size="24" color="#FF823A"></icon>
+      <text class="header-title">练习情况</text>
+    </view>
+  </view>
+
+  <view class="info-container">
+    <view class="info-col">
+      <text class="label">一共</text>
+      <text class="val blue-text">{{totalCount}} 题</text>
+    </view>
+    <view class="info-divider"></view>
+    <view class="info-col">
+      <text class="label">答对</text>
+      <text class="val green-text">{{correctCount}} 题</text>
+    </view>
+    <view class="info-divider"></view>
+    <view class="info-col">
+      <text class="label">答错</text>
+      <text class="val red-text">{{wrongCount}} 题</text>
+    </view>
+    <view class="info-divider"></view>
+    <view class="info-col">
+      <text class="label">总用时</text>
+      <text class="val blue-text">{{duration}}</text>
+    </view>
+  </view>
+</view>
+  </scroll-view>
+
+  <view class="bottom-actions">
+    <button class="btn-all" bindtap="viewAll">查看答案</button>
+  </view>
+</view>

@@ -208,7 +208,7 @@ Page({
             totalWords: selectedBook.count,
             learnedCount: 0,
             reviewNumber: 0,
-            reviewedCount: 0,
+            reviewedNumber: 0,
             selectTime: db.serverDate()
           }
         }).then(() => {

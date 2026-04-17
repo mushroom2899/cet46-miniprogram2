@@ -5,9 +5,9 @@
         <text class="nav-icon">〈</text>
         <text class="nav-text"> {{completedInBatch}}/{{batchSize}}</text>
       </view>
-      <view class="nav-right">
+      <!-- <view class="nav-right">
         <text class="nav-icon">↺</text>
-      </view>
+      </view> -->
     </view>
   </view>
 

@@ -6,14 +6,14 @@ Page({
     bookTitle: '暂未选择',
     bookCover: '', // 用于存放真实封面的 URL
     category: '-',
-    learnedCount: 0,
+    learnedCount: 10,
     totalWords: 0,
     progressPercent: 0, 
     
-    todayLearn: 0,
-    totalLearn: 0,
-    todayDuration: 0,
-    totalDuration: 0,
+    todayLearn: 5,
+    totalLearn: 10,
+    todayDuration: 20,
+    totalDuration: 32,
     
     studyCount: 0, 
     checkinDates: [], 

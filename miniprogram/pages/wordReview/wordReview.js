@@ -2,6 +2,14 @@
 const db = wx.cloud.database(); // 引入云数据库
 const _ = db.command;
 
+// 掌握度计算工具函数
+const calculateMastery = (testCount, correctCount, reviewedCount = 0) => {
+  if (!testCount || testCount === 0) return 0;
+  const accuracy = correctCount / testCount;
+  const reviewScore = Math.min(reviewedCount, 5) / 5;
+  return Math.round((accuracy * 0.6 + reviewScore * 0.4) * 100);
+};
+
 Page({
   data: {
     inputValue: '',
@@ -19,7 +27,8 @@ Page({
     showAnswer: false,
     // 发音与音标控制状态
     showPhonetic: false, // 是否显示音标
-    accentType: 2        // 发音类型：2为美音，1为英音
+    accentType: 2,        // 发音类型：2为美音，1为英音
+    isUpdating: false // 状态锁，防止并发引起的计算错误
   },
 
   // onLoad 中接收 options 参数
@@ -70,26 +79,23 @@ onUnload() {
   // === 从云数据库拉取真实单词 ===
   async fetchReviewWords(limitCount, category) {
     wx.showLoading({ title: '加载已学词库...' });
-
-    const targetCategory = category || this.data.category;
-  console.log('正在拉取的词书类型:', targetCategory);
    
     try {
       const res = await db.collection('user_words')
-        .aggregate()
-        .match({ 
-          category: targetCategory // 只抽出当前所选词书的已学单词
-        }) 
-        .sample({ size: limitCount })  // 随机抽取用户设定数量的单词
-        .end();
+      .where({ category: category || this.data.category })
+      .orderBy('mastery', 'asc') // 掌握度越低越靠前
+      .limit(limitCount)
+      .get();
 
-      // 因为我们在学习时把单词的完整数据包存在了 wordData 字段里，这里要把它们“剥”出来
-const words = res.list.map(item => {
-  return {
-    ...item.wordData,
-    _dbId: item._id // 将数据库的唯一ID保存下来
-  };
-});
+    const words = res.data.map(item => ({
+      ...item.wordData,
+      _dbId: item._id,
+      mastery: item.mastery || 0,
+      reviewedCount: item.reviewedCount || 0,
+      testCount: item.testCount || 0,
+      correctCount: item.correctCount || 0
+    }));
+
       if (words && words.length > 0) {
         this.setData({
           reviewWords: words,
@@ -100,7 +106,7 @@ const words = res.list.map(item => {
       } else {
         wx.showModal({
           title: '提示',
-          content: '你还没有学习过这本词书的单词哦，先去学习几个再来复习吧！',
+          content: '暂无已学单词，先去学习吧！',
           showCancel: false,
           success: () => wx.navigateBack()
         });
@@ -161,7 +167,7 @@ const words = res.list.map(item => {
     } else {
       wx.showModal({
         title: '太棒了',
-        content: `恭喜你完成了本组 ${this.data.targetReviewCount} 个单词的听写复习！`,
+        content: `恭喜你完成了本组 ${this.data.targetReviewCount} 个单词的复习！`,
         showCancel: false,
         confirmText: '返回',
         confirmColor: '#FF6B00',
@@ -209,9 +215,11 @@ const words = res.list.map(item => {
   },
 
   // === 手动点击✓号验证 ===
-  checkAnswer() {
+ async checkAnswer() {
+    if (this.data.isUpdating) return;
+
     if (this.data.isCorrect) {
-      this.updateReviewCount();
+      await this.updateReviewCount();
       this.nextWord();
     } else {
       const targetWord = this.data.currentWord.headWord;
@@ -235,45 +243,132 @@ const words = res.list.map(item => {
     }
   },
 
-  // 在 checkAnswer 后面或 Page 内部新增
-async updateReviewCount() {
-  const currentWord = this.data.currentWord;
-  const progressId = this.data.progressId; // 获取 onLoad 中存入的进度记录 ID
-  console.log('进度记录id',this.data.progressId);
-  if (!currentWord || !currentWord._dbId) return;
+  // async updateReviewCount() {
 
-  try {
-    // --- 并发执行两个更新任务 ---
-    const tasks = [];
+  //   const { currentWord, progressId } = this.data;// 【新增调试日志】
+  //   console.log('--- 算分现场抓包 ---');
+  //   console.log('this.data:', this.data);
+  //   console.log('currentWord:', currentWord);
+  //   console.log('单词:', currentWord.headWord);
+  //   console.log('数据库原始复习次数:', currentWord.reviewedCount);
 
-    // 任务 A: 更新该单词在 user_words 里的个人复习数据
-    tasks.push(
-      db.collection('user_words').doc(currentWord._dbId).update({
-        data: {
-          reviewedCount: _.inc(1),
-          lastReviewDate: db.serverDate()
-        }
-      })
-    );
+  //   if (!currentWord || !currentWord._dbId) return;
+  //   console.log(this.data);
+  
+  //   try {
+  //     // 1. 计算最新的掌握度分值
+  //     const newReviewedCount = (currentWord.reviewedCount || 0) + 1;
+  //     console.log('参与计算的复习次数(newReviewedCount):', newReviewedCount);
+  //     const newMastery = calculateMastery(currentWord.testCount, currentWord.correctCount, newReviewedCount);
+      
 
-    // 任务 B: 更新 user_progress 里的总复习计数（核心需求）
-    if (progressId) {
+  //   console.log('最终算出的掌握度:', newMastery);
+  
+  //     const tasks = [];
+  
+  //     // 任务 A: 更新单词表（掌握度、复习次数、最后复习时间）
+  //     tasks.push(
+  //       db.collection('user_words').doc(currentWord._dbId).update({
+  //         data: { 
+  //           reviewedCount: _.inc(1), 
+  //           mastery: newMastery, 
+  //           lastReviewDate: db.serverDate(),
+
+  //         'wordData.reviewedCount': newReviewedCount,
+  //         'wordData.testCount': currentWord.testCount,
+  //         'wordData.correctCount': currentWord.correctCount
+  //         }
+  //       })
+  //     );
+  
+  //     // 任务 B: 更新进度表（总复习数+1，待复习任务-1）
+  //     if (progressId) {
+  //       tasks.push(
+  //         db.collection('user_progress').doc(progressId).update({
+  //           data: { 
+  //             reviewCount: _.inc(1),  // 已经完成复习字段自增 1
+  //             reviewNumber: _.inc(-1) // 需要复习字段自减 1 
+  //           }
+  //         })
+  //       );
+  //     }
+  
+  //     await Promise.all(tasks);
+  
+  //     // 同步本地数据，确保后续逻辑正常
+  //     this.setData({ 
+  //       'currentWord.reviewedCount': newReviewedCount, 
+  //       'currentWord.mastery': newMastery ,
+  //       'currentWord.wordData.reviewedCount': newReviewedCount // 同时也同步本地的内层
+  //     });
+  
+  //     console.log('掌握度与任务进度同步更新成功');
+  //   } catch (err) {
+  //     this.setData({ isUpdating: false }); // 失败了才解锁
+  //     console.error('更新失败:', err);
+  //   }
+  // }
+
+  async updateReviewCount() {
+    const { currentWord, progressId, currentIndex, reviewWords } = this.data;
+    if (!currentWord || !currentWord._dbId || this.data.isUpdating) return;
+
+    this.setData({ isUpdating: true });
+
+    try {
+      // 1. 基于当前单词的原始数据计算（不再受全局 currentWord 污染）
+      const oldVal = currentWord.reviewedCount || 0;
+      const newVal = oldVal + 1;
+      
+      const newMastery = calculateMastery(
+        currentWord.testCount, 
+        currentWord.correctCount, 
+        newVal
+      );
+
+      console.log(`[更新中] ${currentWord.headWord}: ${oldVal} -> ${newVal}, 掌握度: ${newMastery}`);
+
+      const tasks = [];
+      // 任务 A: 更新单词表
       tasks.push(
-        db.collection('user_progress').doc(progressId).update({
-          data: {
-            reviewedCount: _.inc(1), // 已经完成复习字段自增 1
-            reviewNumber: _.inc(-1) // 需要复习字段自减 1
+        db.collection('user_words').doc(currentWord._dbId).update({
+          data: { 
+            reviewedCount: _.inc(1), 
+            mastery: newMastery, 
+            lastReviewDate: db.serverDate(),
+            'wordData.reviewedCount': newVal // 同步内部备份
           }
         })
       );
-    }
 
-    await Promise.all(tasks);
-    console.log('单词复习数据与总进度同步更新成功');
-    
-  } catch (err) {
-    console.error('更新复习进度失败:', err);
-  }
-}
+      // 任务 B: 更新进度表
+      if (progressId) {
+        tasks.push(
+          db.collection('user_progress').doc(progressId).update({
+            data: { 
+              reviewedNumber: _.inc(1),
+              reviewNumber: _.inc(-1)
+            }
+          })
+        );
+      }
+
+      await Promise.all(tasks);
+
+      // 2. 核心修正：手动更新本地数组中对应的那个单词，防止 nextWord 拿到脏数据
+      const updatedWords = [...reviewWords];
+      updatedWords[currentIndex].reviewedCount = newVal;
+      updatedWords[currentIndex].mastery = newMastery;
+
+      this.setData({ 
+        reviewWords: updatedWords,
+        isUpdating: false 
+      });
+
+    } catch (err) {
+      console.error('更新失败:', err);
+      this.setData({ isUpdating: false });
+    }
+  },
 
 });

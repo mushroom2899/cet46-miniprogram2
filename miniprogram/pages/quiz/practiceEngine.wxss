@@ -40,14 +40,6 @@
         font-size: 30rpx;
       }
       
-  /* .header {
-    text-align: right;
-    padding: 20rpx 30rpx;
-    color: #999;
-    font-size: 28rpx;
-    background: #fff;
-    z-index: 10;
-  } */
   
   .main-swiper {
     flex: 1;
@@ -164,8 +156,8 @@
   }
   
   .option-item.selected {
-    background: #f0f7ff;
-    border: 2rpx solid #3c8cff;
+    background: #ffffff;
+    border: 2rpx solid #FF823A;
   }
   
   .option-label {
@@ -183,7 +175,7 @@
   }
   
   .option-item.selected .option-label {
-    background: #3c8cff;
+    background: #FF823A;
     color: #fff;
   }
   
@@ -228,13 +220,12 @@
     color: #ccc;
   }
 
-  /* ...保留其他的样式... */
-
 .main-swiper {
     flex: 1; 
     width: 100%; /* 防止宽度坍塌 */
-    height: 100%;
+    margin-bottom: 120rpx; 
   }
+
   
   /* ======== 新增防止白屏的满高容器 ======== */
   .swiper-content-wrapper {
@@ -247,14 +238,67 @@
     height: 100%;
   }
   
-  /* 把 .material-content 改成 text 的展现方式，更好支持换行符 */
   .material-content {
     font-size: 34rpx;
     line-height: 1.8;
     color: #333;
+    padding-left: 30rpx;
+    padding-top: 140rpx;
     padding-bottom: 40rpx;
     display: block;      /* 确保文本可以正常占据高度 */
     white-space: pre-wrap; /* 识别数据库里的 \n 换行符 */
   }
+
+  /* 底部操作栏容器 */
+.footer-action {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 50rpx 40rpx; /* 适配全面屏底部 */
+  background-color: #ffffff;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+/* 提交按钮样式 */
+.btn-submit {
+  width: 80% !important;
+  height: 100rpx;
+  background: linear-gradient(135deg, #FF823A 0%, #FF5722 100%);
+  color: #ffffff;
+  border-radius: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: bold;
+  box-shadow: 0 6rpx 20rpx rgba(255, 130, 58, 0.3);
+}
+
+.btn-submit:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+/* 正确选项样式 */
+.option-item.correct {
+  border: 2rpx solid #07c160 !important;
+  background-color: #f0f9eb !important;
+  color: #07c160 !important;
+}
+
+/* 错误选项样式 */
+.option-item.wrong {
+  border: 2rpx solid #ee0a24 !important;
+  background-color: #fff0f0 !important;
+  color: #ee0a24 !important;
+}
+
+
+
+
   
-  /* ...保留其他的样式... */
